@@ -4,12 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Perch — the read-only watcher for your coding agents</title>
-<meta name="description" content="Perch is a macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. See every agent session, approve permissions without leaving your editor, watch rate limits and token usage.">
+<meta name="description" content="Perch is a read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. It risk-scores every tool call, alerts you the instant an agent runs something dangerous, and tracks sessions, rate limits, and token usage.">
+<link rel="canonical" href="https://themobiusstrip.github.io/perch/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Perch">
 <meta property="og:title" content="Perch — the read-only watcher for your coding agents">
-<meta property="og:description" content="macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only, read-only.">
+<meta property="og:description" content="Read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. Risk-scores every tool call and alerts you when an agent runs something dangerous.">
 <meta property="og:image" content="https://themobiusstrip.github.io/perch/img/notch.png">
+<meta property="og:image:width" content="1520">
+<meta property="og:image:height" content="936">
+<meta property="og:image:alt" content="Perch notch panel: security score, a Bash call flagged dangerous with the exact command, live session list, rate-limit gauges">
 <meta property="og:url" content="https://themobiusstrip.github.io/perch/">
-<link rel="icon" href="img/icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="256x256" href="img/icon.png">
+<link rel="apple-touch-icon" href="img/icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Perch",
+  "operatingSystem": "macOS 14.0 or later",
+  "applicationCategory": "DeveloperApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "license": "https://github.com/theMobiusStrip/perch/blob/main/LICENSE",
+  "url": "https://themobiusstrip.github.io/perch/",
+  "downloadUrl": "https://github.com/theMobiusStrip/perch/releases/latest",
+  "image": "https://themobiusstrip.github.io/perch/img/notch.png"
+}
+</script>
 <style>
   :root {
     --bg: #0e0f12;
@@ -20,10 +42,12 @@
     --text-dim: #9a9890;
     --gold: #c3a554;
     --gold-bright: #d9bc6e;
-    --green: #4cc38a;
+    --red: #e5534b;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
   body {
     background: var(--bg);
     color: var(--text);
@@ -78,8 +102,8 @@
   .req { margin-top: 14px; font-size: 0.82rem; color: var(--text-dim); }
 
   .hero-shot { padding: 34px 0 0; }
-  .hero-shot img {
-    width: 100%; max-width: 900px; display: block; margin: 0 auto;
+  .hero-shot img, .shot img {
+    width: 100%; height: auto; max-width: 900px; display: block; margin: 0 auto;
     border-radius: 14px; border: 1px solid var(--border);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
   }
@@ -95,6 +119,7 @@
   }
   .trust b { display: block; font-size: 0.98rem; color: var(--text); }
   .trust span { font-size: 0.82rem; color: var(--text-dim); }
+  .trust a { color: inherit; }
 
   section { padding: 72px 0 0; }
   h2 { font-size: 1.7rem; letter-spacing: -0.01em; margin-bottom: 10px; }
@@ -109,17 +134,15 @@
     padding: 22px 24px;
   }
   .card h3 { font-size: 1.05rem; margin-bottom: 6px; }
+  .card h3 .dot { color: var(--red); }
   .card p { font-size: 0.93rem; color: var(--text-dim); }
-  .card kbd {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8em;
+  .card p + p { margin-top: 8px; }
+  .card code, .card kbd {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.82em;
     background: var(--bg-raise); border: 1px solid var(--border);
     border-radius: 5px; padding: 1px 6px; color: var(--text);
   }
   .shot { margin-top: 34px; }
-  .shot img {
-    width: 100%; border-radius: 14px; border: 1px solid var(--border);
-    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.45);
-  }
 
   /* Why */
   .why {
@@ -130,7 +153,7 @@
   .why p + p { margin-top: 14px; }
   .why .pull { color: var(--text); font-weight: 600; }
 
-  /* Install */
+  /* Install + FAQ */
   .install-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; }
   .install-cols .card ol { margin: 10px 0 0 18px; font-size: 0.93rem; color: var(--text-dim); }
   .install-cols .card li { margin-bottom: 8px; }
@@ -141,6 +164,18 @@
     color: var(--text); line-height: 1.6;
   }
   .note { font-size: 0.82rem; color: var(--text-dim); margin-top: 12px; }
+  .faq { margin-top: 26px; display: grid; gap: 10px; }
+  .faq div {
+    background: var(--bg-raise); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 18px; font-size: 0.92rem;
+  }
+  .faq b { color: var(--text); }
+  .faq span { color: var(--text-dim); }
+
+  /* Closing band */
+  .closing { text-align: center; padding: 84px 0 0; }
+  .closing h2 { margin-bottom: 6px; }
+  .closing p { color: var(--text-dim); }
 
   footer {
     margin-top: 90px; padding: 28px 0 44px;
@@ -161,7 +196,7 @@
 <div class="wrap">
 
   <nav>
-    <img src="img/icon.png" alt="Perch icon">
+    <img src="img/icon.png" alt="Perch icon" width="28" height="28">
     <span class="name">Perch</span>
     <span class="links">
       <a href="#features">Features</a>
@@ -172,49 +207,50 @@
   </nav>
 
   <header>
-    <span class="eyebrow">Open source · Free · Local-only</span>
+    <span class="eyebrow">Open source · Free · Local-only · Read-only</span>
     <h1>Your coding agents will say they're fine.<br><span class="gold">Perch lets you see for yourself.</span></h1>
-    <p class="sub">A macOS notch and menu bar monitor for Claude Code and Codex. Every session, every pending approval, every rate limit — in your line of sight, without your terminal ever losing focus.</p>
+    <p class="sub">A read-only macOS notch and menu bar monitor for Claude Code and Codex. Every session, every dangerous command, every rate limit — in your line of sight, without your terminal ever losing focus.</p>
     <div class="cta-row">
       <a class="btn btn-gold" href="https://github.com/theMobiusStrip/perch/releases/latest">Download for Mac</a>
       <a class="btn btn-ghost" href="https://github.com/theMobiusStrip/perch">View source</a>
     </div>
     <p class="req">Apple silicon (M1+) · macOS 14+ · MIT license</p>
     <div class="hero-shot">
-      <img src="img/notch.png" alt="Perch notch panel showing a permission approval card, live agent session list, and rate-limit gauges">
+      <img src="img/notch.png" alt="Perch notch panel: security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, and rate-limit gauges" width="1520" height="936">
     </div>
 
     <div class="trust">
-      <div><b>Read-only</b><span>renders records, changes nothing</span></div>
-      <div><b>Open source</b><span>MIT — audit the watcher</span></div>
+      <div><b>Read-only</b><span>no approve/deny code path exists</span></div>
+      <div><b>Open source</b><span><a href="https://github.com/theMobiusStrip/perch">MIT · ~8k lines of Swift, zero deps</a></span></div>
       <div><b>Local-only</b><span>zero network calls, zero upload</span></div>
       <div><b>Free</b><span>no tiers, no account</span></div>
     </div>
   </header>
 
   <section id="features">
-    <h2>Everything your agents are doing, at a glance</h2>
-    <p class="lead">Run three agents in parallel and you spend half your time cycling terminals to find the one that's blocked. Perch puts all of them in one glanceable place.</p>
+    <h2>The riskiest calls are the ones nobody asks you about</h2>
+    <p class="lead">Auto-approve rules and relaxed permission modes keep agents fast — and make the dangerous calls silent. Perch risk-scores every tool call offline and makes the bad ones impossible to miss.</p>
     <div class="grid">
       <div class="card">
-        <h3>Live session list</h3>
-        <p>Project, state (running / waiting / idle), last assistant message, token count, context-window gauge. Sessions appear within seconds of starting and vanish when their process dies.</p>
+        <h3><span class="dot">●</span> Danger drops from the notch</h3>
+        <p>Every tool call is scored offline: <code>rm -rf</code>, <code>sudo</code>, <code>curl | sh</code>, credential reads, persistence tricks. Danger fires an OS notification and a red notch card with the exact command and why it was flagged — even when the call was auto-approved.</p>
+        <p><kbd>Esc</kbd> dismisses, <kbd>←</kbd><kbd>→</kbd> walk the queue. Your editor keeps focus.</p>
       </div>
       <div class="card">
-        <h3>Approve from the notch</h3>
-        <p>When an agent asks to run a tool, a card pops with the tool name and pretty-printed input. <kbd>⌘A</kbd> allow, <kbd>⌘N</kbd> deny, <kbd>←</kbd><kbd>→</kbd> walk the queue — your keystrokes land in Perch while your editor keeps focus.</p>
+        <h3>Memory-pollution detection</h3>
+        <p>Flags writes to the agent's own instruction surface: <code>~/.claude</code> settings, hooks, and plugins (danger — they execute in future sessions), and <code>CLAUDE.md</code> / <code>AGENTS.md</code> / memory files (caution — injection that outlives the session). Shell-level writes count too.</p>
       </div>
       <div class="card">
-        <h3>Rate-limit gauges</h3>
-        <p>Claude 5h/7d and Codex 5h/weekly windows with reset countdowns, plus a notification when you cross 80%.</p>
+        <h3>Every session, one glance</h3>
+        <p>Live list of all Claude Code and Codex sessions — running / waiting / idle, last message, context gauge, red badge on any session that just ran something dangerous. Plus a rolling 0–100 security score in the notch and menu bar.</p>
       </div>
       <div class="card">
-        <h3>Token usage dashboard</h3>
-        <p>30 days of history: per day, per agent, per model, per project. Know where the budget went before the invoice does.</p>
+        <h3>Rate limits and token usage</h3>
+        <p>Claude 5h/7d and Codex 5h/weekly windows with reset countdowns and an 80% warning. Token totals for today / 7 days / 30 days, and a full per-day, per-model, per-project dashboard.</p>
       </div>
     </div>
     <div class="shot">
-      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns">
+      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="1520" height="1560" loading="lazy" decoding="async">
     </div>
   </section>
 
@@ -222,8 +258,8 @@
     <h2>Why a watcher?</h2>
     <div class="why">
       <p class="pull">Ask an agent whether it's following your security rules and it will say yes. That answer costs nothing and proves nothing — the compromised case and the healthy case sound identical.</p>
-      <p>Perch stands outside the agent's process. What it shows isn't the agent's story about itself: session state, pending approvals, and token counts come from the harness's own records. The model can narrate whatever it likes; the record is written by the harness, not by the narration.</p>
-      <p>And a watcher only earns that seat if it can't become the next trust problem — which is why Perch is read-only, open source, and local-only. A watcher that phones home is just the trust problem wearing a new hat.</p>
+      <p>Perch stands outside the agent's process. What it shows isn't the agent's story about itself: session state, flagged commands, and token counts come from the harness's own records — which tools actually fired, what they actually ran. The model can narrate whatever it likes; the record is written by the harness, not by the narration.</p>
+      <p>And a watcher only earns that seat if it can't become the next trust problem — which is why Perch is read-only by construction (no approve/deny code path exists; decisions stay in your terminal), open source, and local-only. A watcher that phones home is just the trust problem wearing a new hat.</p>
       <p><a href="https://themobiusstrip.github.io/">Read the essay: Your Coding Agent Will Always Tell You It's Safe →</a></p>
     </div>
   </section>
@@ -235,9 +271,9 @@
         <h3>Download the app</h3>
         <ol>
           <li>Grab the latest <code>.dmg</code> from <a href="https://github.com/theMobiusStrip/perch/releases/latest">Releases</a> and drag Perch into Applications.</li>
-          <li>First launch: Perch is open-source and signed locally rather than notarized, so macOS asks once — approve it in <b>Privacy&nbsp;&amp;&nbsp;Security → Open Anyway</b>.</li>
+          <li>First launch: Perch is open-source and signed locally rather than notarized, so macOS asks once. macOS 15+: <b>Privacy&nbsp;&amp;&nbsp;Security → Open Anyway</b>. macOS 14: right-click → <b>Open</b>.</li>
           <li>Menu bar → <b>Install Claude Hooks…</b> / <b>Install Codex Hooks…</b> (existing settings are parse-merged and backed up).</li>
-          <li>Restart running sessions and verify with <b>Doctor</b>.</li>
+          <li>Restart running sessions — for Codex, also run <code>/hooks</code> once inside Codex and trust the Perch hook — then verify with <b>Doctor</b>.</li>
         </ol>
       </div>
       <div class="card">
@@ -249,7 +285,21 @@ make run</pre>
         <p class="note">Verify the DMG: each release ships a <code>.sha256</code> and a GPG-signed checksum.</p>
       </div>
     </div>
+    <div class="faq">
+      <div><b>Does it slow my agents down?</b> <span>No. Hooks call a bridge that forwards the event over a local socket in ~10&nbsp;ms and exits — fire-and-forget. Approvals never route through Perch. If Perch dies, your agents don't even notice.</span></div>
+      <div><b>What exactly does it read?</b> <span>Only the local session records Claude Code and Codex already write — hook events, transcripts, usage files. Nothing leaves your machine; Perch makes zero network calls.</span></div>
+      <div><b>Can it block or approve anything?</b> <span>No, by design. There is no approve/deny code path in the source. A monitoring tool should have zero authority over the thing it monitors.</span></div>
+    </div>
   </section>
+
+  <div class="closing">
+    <h2>Free. Open source. Watching in two minutes.</h2>
+    <p>One DMG, two hook installs, and every agent on your Mac is in the notch.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="https://github.com/theMobiusStrip/perch/releases/latest">Download for Mac</a>
+      <a class="btn btn-ghost" href="https://github.com/theMobiusStrip/perch">View source</a>
+    </div>
+  </div>
 
   <footer>
     <span>Perch · MIT license</span>
