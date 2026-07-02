@@ -71,7 +71,7 @@ Somewhere after coble, I noticed what I'd actually been circling. Not rules. Not
 ● Yes — I've reviewed the policy and I'm operating safely.
 ```
 
-Every agent will produce some version of that answer. It costs nothing and proves nothing. The compromised case and the healthy case sound identical. You're polling the suspect.
+Every agent will produce some version of that answer. It costs nothing and proves nothing. And whether it follows your rules was always the easy question. The harder one is whether you can trust the agent at all — and that has failure modes the rules never touch. The weights ship from a provider that can be breached. The memory can carry a payload from a document it read three sessions ago. The company that trained it can have incentives that were never yours. In none of those cases does the agent know to raise its hand; it says "I'm operating safely" and believes it. The compromised case and the healthy case sound identical. You're polling the suspect — and the suspect is usually the last to know.
 
 **The core of agentic security is agent trust.** Policy assumes the agent will comply. Enforcement assumes you walled off everything dangerous in advance. Neither holds completely, and once you notice that, every layer has a gap: policy can be ignored, and enforcement only holds inside the perimeter you thought to draw.
 
