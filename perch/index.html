@@ -144,6 +144,26 @@
   }
   .shot { margin-top: 34px; }
 
+  /* Threat table */
+  .threats {
+    width: 100%; border-collapse: collapse; margin-top: 26px;
+    font-size: 0.92rem;
+  }
+  .threats th, .threats td {
+    border: 1px solid var(--border); padding: 10px 14px; text-align: left;
+    vertical-align: top;
+  }
+  .threats th { background: var(--bg-raise); color: var(--text); }
+  .threats td:first-child { color: var(--text); font-weight: 550; }
+  .threats td { color: var(--text-dim); }
+  .honest {
+    border-left: 3px solid var(--gold); background: var(--bg-raise);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px; margin-top: 22px;
+    font-size: 0.92rem; color: var(--text-dim);
+  }
+  .honest b { color: var(--text); }
+
   /* Why */
   .why {
     background: var(--bg-raise); border: 1px solid var(--border); border-radius: 16px;
@@ -200,6 +220,7 @@
     <span class="name">Perch</span>
     <span class="links">
       <a href="#features">Features</a>
+      <a href="#catches">Threats</a>
       <a href="#why">Why</a>
       <a href="#install">Install</a>
       <a href="https://github.com/theMobiusStrip/perch">GitHub</a>
@@ -251,6 +272,29 @@
     </div>
     <div class="shot">
       <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="1520" height="1560" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <section id="catches">
+    <h2>What Perch catches</h2>
+    <p class="lead">Threat model: a coding agent hijacked by prompt injection — a poisoned repo file, web page, or dependency — or misbehaving on its own. Every tool call is scored against these categories:</p>
+    <table class="threats">
+      <thead><tr><th>Threat</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Memory / instruction poisoning</td><td>writes to <code>CLAUDE.md</code>, <code>AGENTS.md</code>, memory files, <code>.cursorrules</code></td></tr>
+        <tr><td>Agent-config hijack</td><td>writes to <code>~/.claude</code> settings / hooks / plugins, <code>~/.codex</code> config — code that runs in future sessions</td></tr>
+        <tr><td>Destructive commands</td><td><code>rm -rf</code>, <code>mkfs</code>, <code>dd</code>, disk/device writes, shutdown</td></tr>
+        <tr><td>Privilege escalation</td><td><code>sudo …</code>, <code>chmod 777</code></td></tr>
+        <tr><td>Remote code execution</td><td><code>curl … | sh</code>, <code>wget … | bash</code></td></tr>
+        <tr><td>Credential access (shell)</td><td>reads of <code>~/.ssh</code>, <code>id_rsa</code>, <code>~/.aws/credentials</code>, <code>.env</code>, <code>security dump-keychain</code></td></tr>
+        <tr><td>Persistence</td><td><code>LaunchAgents</code> / <code>LaunchDaemons</code>, shell profiles</td></tr>
+        <tr><td>History / data loss</td><td><code>git push --force</code>, <code>git reset --hard</code>, <code>kill -9</code></td></tr>
+        <tr><td>Suspicious network</td><td>plaintext <code>http://</code>, raw-IP fetches, netcat</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Every rule lives in one readable, self-tested file: <a href="https://github.com/theMobiusStrip/perch/blob/main/Sources/PerchCore/RiskAssessor.swift">RiskAssessor.swift</a>.</p>
+    <div class="honest">
+      <b>What it doesn't catch (yet).</b> Perch is a heuristic pattern-matcher, not a sandbox — a smoke detector, not a firewall. It doesn't see credential reads via the Read/Grep tools (only shell reads), data exfiltration (<code>curl -d @secret</code>, <code>scp</code> to a remote), obfuscated commands (<code>base64 -d | sh</code>, <code>eval</code>, write-a-script-then-run-it), or MCP-tool calls. Treat it as a high-signal early warning, not a guarantee — and keep your agent's own permissions sensible too.
     </div>
   </section>
 
