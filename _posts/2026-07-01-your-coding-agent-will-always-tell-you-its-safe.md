@@ -71,21 +71,21 @@ Somewhere after coble, I noticed what I'd actually been circling. Not rules. Not
 ● Yes — I've reviewed the policy and I'm operating safely.
 ```
 
-Every agent will produce some version of that answer. It costs nothing and proves nothing. The compromised case and the healthy case sound identical. You're polling the suspect.
+Every agent will produce some version of that answer. It costs nothing and proves nothing. And whether it follows your rules was always the easy question. The harder one is whether you can trust the agent at all — and that has failure modes the rules never touch. The weights ship from a provider that can be breached. The memory can carry a payload from a document it read three sessions ago. The company that trained it can have incentives that were never yours. In none of those cases does the agent know to raise its hand; it says "I'm operating safely" and believes it. The compromised case and the healthy case sound identical. You're polling the suspect — and the suspect is usually the last to know.
 
 **The core of agentic security is agent trust.** Policy assumes the agent will comply. Enforcement assumes you walled off everything dangerous in advance. Neither holds completely, and once you notice that, every layer has a gap: policy can be ignored, and enforcement only holds inside the perimeter you thought to draw.
 
-So trust can't come from the agent's account of itself. It has to come from a vantage point the agent doesn't control. In other words: there has to be a watcher.
+So trust can't come from the agent's account of itself. An agent can't monitor itself, and it can't declare itself secure — that verdict has to come from a third party, standing where the agent can't reach. And the watcher only earns that position if it can't become the next trust problem: it only reads, you can audit it, and your data never leaves. In other words: there has to be a watcher — and the watcher has to be easier to trust than the thing it watches.
 
 ## A watcher above the screen
 
-That's perch: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, inline permission approval, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at.
+That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, inline permission approval, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at.
 
 What matters is *where it stands*: outside the agent's process. Agent content reaches it only as data to display; there's no model inside to prompt-inject, and no tool call can rewrite how it renders. And what it shows isn't the agent's story about itself: session state, pending approvals, and token counts come from the harness's own records — which tools actually fired, which permission is actually waiting. The model can narrate whatever it likes; the record is written by the harness, not by the narration. When the agent claims it's idle, the notch either agrees or it doesn't.
 
 Could a fully unsandboxed agent attack the watcher itself, or quietly doctor the session files the watcher reads? In principle, yes. A supervisor is defense in depth, not magic, and I'd rather say that plainly than repeat the mistake this whole post is about. Tampering is still a higher bar than ignoring a rule in your own context — it takes deliberate, targeted action instead of a plausible rationalization — and raising the bar is the point. But files on a machine are only ever as trustworthy as the machine, which is why the enforcement layer exists, and why the fleet story ships events off-box.
 
-The selling points are deliberately anti-commercial: perch is open source, free, local-only, and it uploads *nothing*. A watcher that phones home is just the trust problem wearing a new hat.
+The three properties are the point, not features. Read-only: perch renders the harness's records and changes nothing — the only thing that ever flows back is your own decision on a permission prompt. Open source: a watcher you can't read is just another agent asking to be believed. Local-only: it uploads *nothing*, because a watcher that phones home is the trust problem wearing a new hat. It's also free — but that's economics, not security.
 
 ## Now multiply by four hundred
 
