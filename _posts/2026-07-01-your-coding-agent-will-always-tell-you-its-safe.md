@@ -61,15 +61,15 @@ So trust can't come from the agent's account of itself. It has to come from outs
 
 ## Why perch exists
 
-That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, inline permission approval, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at.
+That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, offline risk-scoring on every tool call, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at. When an agent runs something dangerous, a red card drops from the notch with the exact command and why it was flagged — even when the call was auto-approved. The riskiest calls are exactly the ones nobody asks you about.
 
-![Perch in the notch: live agent sessions, a pending permission card, rate-limit gauges](/assets/img/perch-notch.png)
+![Perch in the notch: security score, a Bash call flagged dangerous, live agent sessions, rate-limit gauges](/assets/img/perch-notch.png)
 
-What matters is *where it stands*: outside the agent's process. Agent content reaches it only as data to display; there's no model inside to prompt-inject, and no tool call can rewrite how it renders. And what it shows isn't the agent's story about itself: session state, pending approvals, and token counts come from the harness's own records — which tools actually fired, which permission is actually waiting. The model can narrate whatever it likes; the record is written by the harness, not by the narration. When the agent claims it's idle, the notch either agrees or it doesn't.
+What matters is *where it stands*: outside the agent's process. Agent content reaches it only as data to display; there's no model inside to prompt-inject, and no tool call can rewrite how it renders. And what it shows isn't the agent's story about itself: session state, flagged commands, and token counts come from the harness's own records — which tools actually fired, what they actually ran. The model can narrate whatever it likes; the record is written by the harness, not by the narration. When the agent claims it's idle, the notch either agrees or it doesn't.
 
 Could a fully unsandboxed agent attack the watcher itself, or quietly doctor the session files the watcher reads? In principle, yes. A supervisor is defense in depth, not magic, and I'd rather say that plainly than repeat the mistake this whole post is about. Tampering is still a higher bar than ignoring a rule in your own context — it takes deliberate, targeted action instead of a plausible rationalization — and raising the bar is the point. But files on a machine are only ever as trustworthy as the machine, which is why the enforcement layer exists, and why the fleet story ships events off-box.
 
-The three properties are the point, not features. Read-only: perch renders the harness's records and changes nothing — the only thing that ever flows back is your own decision on a permission prompt. Open source: a watcher you can't read is just another agent asking to be believed. Local-only: it uploads *nothing*, because a watcher that phones home is the trust problem wearing a new hat. It's also free — but that's economics, not security.
+The three properties are the point, not features. Read-only: perch renders the harness's records and changes nothing — there is no approve/deny code path in the source, and decisions stay in your terminal. Open source: a watcher you can't read is just another agent asking to be believed. Local-only: it uploads *nothing*, because a watcher that phones home is the trust problem wearing a new hat. It's also free — but that's economics, not security. Download it at [themobiusstrip.github.io/perch](https://themobiusstrip.github.io/perch/).
 
 ## When one watcher isn't enough
 
