@@ -75,6 +75,8 @@ Could a fully unsandboxed agent attack the watcher itself, or quietly doctor the
 
 The three properties are the point, not features. Read-only: perch renders the harness's records and changes nothing — there is no approve/deny code path in the source, and decisions stay in your terminal. Open source: a watcher you can't read is just another agent asking to be believed. Local-only: it uploads *nothing*, because a watcher that phones home is the trust problem wearing a new hat. It's also free — but that's economics, not security. Download it at [themobiusstrip.github.io/perch](https://themobiusstrip.github.io/perch/).
 
+Threat model, stated bluntly: perch trusts the local OS account boundary and the harness records it reads. It does *not* trust the model, the repo, or transcript text; those are inputs to render and score, not instructions to obey. It does not solve an already-compromised host, where an attacker can kill the app, rewrite hooks, or doctor the files underneath it. And it fails open by design: if perch is absent or crashes, it will not brick your agent workflow; you fall back to the terminal prompts you already had. That is a limitation, and it is also the line that keeps a watcher from becoming a new single point of failure.
+
 ## When one watcher isn't enough
 
 At the scale of one person and a handful of sessions, perch is enough. Picture four hundred engineers, each running coding agents all day. One agent going wrong is an incident. A fleet going wrong is a breach.
