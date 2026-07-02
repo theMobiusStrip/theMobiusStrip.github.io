@@ -42,7 +42,11 @@ The next move was to stop asking and start containing. That's coble, a deliberat
 
 > Assume the model is compromised — then be honest, in code, about the one layer that actually contains it.
 
-In coble there is exactly one real boundary: `--sandbox`. An OS-level filesystem jail, default-deny egress (commands get no network unless you allowlisted the host), and your API keys scrubbed out of what the agent can see. It's opt-in (`--strict-sandbox` if you mean it), and the agent never gets a vote: bypassing it means an OS sandbox escape, not a persuasive prompt. Everything else — a risk classifier on tool calls, policy rules, a model-judged auto-approve mode, spotlighting to mark untrusted text as data — is defense in depth, and each layer says so, honestly, in the source. And unlike Claude Code and Codex, the agent has no sanctioned path to its own policy file: `coble policy install` is a command a human types, a guard coble's own SECURITY.md calls "a deterrent, not a wall."
+In coble there is exactly one real boundary: `--sandbox`. An OS-level filesystem jail, default-deny egress (commands get no network unless you allowlisted the host), and your API keys scrubbed out of what the agent can see. It's opt-in (`--strict-sandbox` if you mean it), and the agent never gets a vote: bypassing it means an OS sandbox escape, not a persuasive prompt. Everything else — a risk classifier on tool calls, policy rules, a model-judged auto-approve mode, spotlighting to mark untrusted text as data — is defense in depth, and each layer says so, honestly, in the source.
+
+One of those layers is worth singling out, because from a distance it looks like enforcement: the auto-approve mode puts a separate, independent LLM in judgment over each tool call. A narrow judge is harder to sway than the agent holding the conversation — but a model judging a model is still a model, foolable by the same class of inputs. It counts as defense in depth, never as the boundary.
+
+And unlike Claude Code and Codex, the agent has no sanctioned path to its own policy file: `coble policy install` is a command a human types, a guard coble's own SECURITY.md calls "a deterrent, not a wall."
 
 But enforcement has its own ceiling: it only holds inside the perimeter you thought to draw. Policy assumes the agent will comply; enforcement assumes you walled off everything dangerous in advance. Neither is a foundation you can rest trust on.
 
