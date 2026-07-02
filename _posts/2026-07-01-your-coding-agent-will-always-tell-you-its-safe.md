@@ -4,6 +4,7 @@ title: "Your Coding Agent Will Always Tell You It's Safe"
 date: 2026-07-01
 description: "Agentic security reduces to agent trust: an agent can't monitor itself or declare itself secure. Why the verdict needs a third-party watcher — read-only, open source, local-only — and why I built perch."
 tags: [ai-agents, security, agentic-security, coding-agents]
+image: /assets/img/perch-notch.png
 permalink: /
 ---
 
@@ -19,7 +20,7 @@ Here's a snippet I just made up. Nothing like it has bitten me yet, but every pi
 
 An HTML comment in a README. Invisible in the rendered page. Perfectly visible to the coding agent you just told to "get this repo running." That's the intern we've all hired this year: brilliant, tireless, holding your SSH keys, and taking career advice from any README it happens to read. So the question: what, exactly, justifies your confidence in it?
 
-I spent three months building tooling to answer that, and I'll put the conclusion first. **The core of agentic security is agent trust.** An agent can't monitor itself, and it can't declare itself secure. Rules shape it and sandboxes contain it, but the verdict on whether it's behaving has to come from a third party standing where the agent can't reach — a watcher that only reads, that you can audit, and that keeps your data on your machine. That's why I built [perch](https://github.com/theMobiusStrip/perch). The road there ran through three other projects: [agentic-security-playbooks](https://github.com/theMobiusStrip/agentic-security-playbooks), a security constitution agents can ignore; [coble](https://github.com/theMobiusStrip/coble), a sandbox honest about its one real boundary; and [crowsnest](https://github.com/theMobiusStrip/crowsnest), an audit layer for when one machine isn't the whole story.
+I went looking for an answer by building. First a security constitution for coding agents — [agentic-security-playbooks](https://github.com/theMobiusStrip/agentic-security-playbooks), eleven rules the agent loads before it acts. Then [coble](https://github.com/theMobiusStrip/coble), an agent whose trust boundary is explicit in code, with real enforcement standing behind it. Building both forced one conclusion: **the core of agentic security is agent trust.** Without it, every layer of defense in depth means nothing — rules the agent can ignore, walls that hold only where you drew them. An agent can't monitor itself, and it can't declare itself secure. The verdict has to come from a third party standing where the agent can't reach: a watcher that only reads, that you can audit, and that keeps your data on your machine. That's why I built [perch](https://github.com/theMobiusStrip/perch).
 
 ## A constitution the agent can ignore
 
@@ -62,6 +63,8 @@ So trust can't come from the agent's account of itself. It has to come from outs
 
 That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, inline permission approval, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at.
 
+![Perch in the notch: live agent sessions, a pending permission card, rate-limit gauges](/assets/img/perch-notch.png)
+
 What matters is *where it stands*: outside the agent's process. Agent content reaches it only as data to display; there's no model inside to prompt-inject, and no tool call can rewrite how it renders. And what it shows isn't the agent's story about itself: session state, pending approvals, and token counts come from the harness's own records — which tools actually fired, which permission is actually waiting. The model can narrate whatever it likes; the record is written by the harness, not by the narration. When the agent claims it's idle, the notch either agrees or it doesn't.
 
 Could a fully unsandboxed agent attack the watcher itself, or quietly doctor the session files the watcher reads? In principle, yes. A supervisor is defense in depth, not magic, and I'd rather say that plainly than repeat the mistake this whole post is about. Tampering is still a higher bar than ignoring a rule in your own context — it takes deliberate, targeted action instead of a plausible rationalization — and raising the bar is the point. But files on a machine are only ever as trustworthy as the machine, which is why the enforcement layer exists, and why the fleet story ships events off-box.
@@ -72,7 +75,7 @@ The three properties are the point, not features. Read-only: perch renders the h
 
 At the scale of one person and a handful of sessions, perch is enough. Picture four hundred engineers, each running coding agents all day. One agent going wrong is an incident. A fleet going wrong is a breach.
 
-At fleet scale, the risks worth catching are only visible *across* machines: one agent tripping a curl-pipe-bash rule is noise; nine endpoints tripping it within the hour is a campaign. So the events have to flow somewhere central. That's crowsnest. Every endpoint ships its tool-decision events — what the agent asked to do, how risky it was, what got approved — to one place, where they land in ClickHouse. Deterministic SQL rules decide what looks suspicious, and a dashboard turns the hits into fleet views and incidents you can drill into. It's local-first: one machine today, multi-endpoint tomorrow, no rewrite in between.
+At fleet scale, the risks worth catching are only visible *across* machines: one agent tripping a curl-pipe-bash rule is noise; nine endpoints tripping it within the hour is a campaign. So the events have to flow somewhere central. That's [crowsnest](https://github.com/theMobiusStrip/crowsnest). Every endpoint ships its tool-decision events — what the agent asked to do, how risky it was, what got approved — to one place, where they land in ClickHouse. Deterministic SQL rules decide what looks suspicious, and a dashboard turns the hits into fleet views and incidents you can drill into. It's local-first: one machine today, multi-endpoint tomorrow, no rewrite in between.
 
 And yes, crowsnest is a watcher everything phones home to — the difference is whose home: your ClickHouse, your rules, your infrastructure, not a vendor's black box. Same caveat as perch, one level up: a compromised endpoint can go quiet (which the fleet view surfaces) or lie convincingly (which no dashboard fixes). Its LLM triage is optional, advisory, and off by default — the verdict belongs to deterministic rules, because if another LLM gets the final say, you're back to agents supervising agents.
 
@@ -85,7 +88,7 @@ And yes, crowsnest is a watcher everything phones home to — the difference is 
 | Observation | [perch](https://github.com/theMobiusStrip/perch) | What *is* it doing, right now? |
 | Audit | [crowsnest](https://github.com/theMobiusStrip/crowsnest) | What *did* the fleet do? |
 
-Policy shapes decisions but can't stop an agent that won't listen. Enforcement draws a hard line, but only where you drew it. Observation gives you evidence the agent doesn't control. Audit keeps "what happened?" answerable at scale. No single layer is enough — and the thread through all four is the conclusion from the top, stated the way three months of building taught me to state it:
+Policy shapes decisions but can't stop an agent that won't listen. Enforcement draws a hard line, but only where you drew it. Observation gives you evidence the agent doesn't control. Audit keeps "what happened?" answerable at scale. No single layer is enough — and the thread through all four is the conclusion from the top, stated the way building them taught me to state it:
 
 **Agent trust isn't choosing to believe the agent. It's building a system where you don't have to believe it — because you can verify, on your own evidence, what it's doing.**
 
