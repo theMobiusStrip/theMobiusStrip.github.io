@@ -1,4 +1,4 @@
-title: Learning Log
+title: themobiusstrip's Learning Log
 description: Notes on what I'm learning — code, systems, and everything in between.
 url: "https://themobiusstrip.github.io"
 baseurl: ""
@@ -13,6 +13,7 @@ minima:
   date_format: "%Y-%m-%d"
 
 header_pages:
+  - posts.md
   - about.md
 
 # Show excerpts on the home page post list
