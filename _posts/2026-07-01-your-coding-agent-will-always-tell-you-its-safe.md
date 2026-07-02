@@ -4,6 +4,7 @@ title: "Your Coding Agent Will Always Tell You It's Safe"
 date: 2026-07-01
 description: "How four side projects — playbooks, coble, perch, crowsnest — became one question about agent trust: policy shapes decisions, enforcement draws lines, observation gives you evidence the agent doesn't control."
 tags: [ai-agents, security, agentic-security, coding-agents]
+permalink: /
 ---
 
 *~7 min read*
