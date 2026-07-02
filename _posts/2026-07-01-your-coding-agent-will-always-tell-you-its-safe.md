@@ -4,6 +4,7 @@ title: "Your Coding Agent Will Always Tell You It's Safe"
 date: 2026-07-01
 description: "Agentic security reduces to agent trust: an agent can't monitor itself or declare itself secure. Why the verdict needs a third-party watcher — read-only, open source, local-only — and why I built perch."
 tags: [ai-agents, security, agentic-security, coding-agents]
+image: /assets/img/perch-notch.png
 permalink: /
 ---
 
@@ -61,6 +62,8 @@ So trust can't come from the agent's account of itself. It has to come from outs
 ## Why perch exists
 
 That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, inline permission approval, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at.
+
+![Perch in the notch: live agent sessions, a pending permission card, rate-limit gauges](/assets/img/perch-notch.png)
 
 What matters is *where it stands*: outside the agent's process. Agent content reaches it only as data to display; there's no model inside to prompt-inject, and no tool call can rewrite how it renders. And what it shows isn't the agent's story about itself: session state, pending approvals, and token counts come from the harness's own records — which tools actually fired, which permission is actually waiting. The model can narrate whatever it likes; the record is written by the harness, not by the narration. When the agent claims it's idle, the notch either agrees or it doesn't.
 

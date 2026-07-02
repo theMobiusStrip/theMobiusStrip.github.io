@@ -72,6 +72,16 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Post images */
+.post-content img {
+  display: block;
+  margin: 1.6em auto;
+  max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid $grey-color-light;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
 /* Post list */
 .post-list h3 { font-size: 1.35em; margin-top: 0; }
 .post-list .post-meta { display: block; margin-bottom: 0.3em; }
@@ -198,4 +208,9 @@ blockquote {
   }
 
   #markdown-toc::before { color: #8b949e; }
+
+  .post-content img {
+    border-color: #30363d;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+  }
 }
