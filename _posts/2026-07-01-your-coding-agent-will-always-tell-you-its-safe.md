@@ -2,7 +2,7 @@
 layout: post
 title: "Your Coding Agent Will Always Tell You It's Safe"
 date: 2026-07-01
-description: "Agentic security reduces to agent trust: an agent can't monitor itself or declare itself secure. Why the verdict needs a third-party watcher — read-only, open source, local-only — and why I built perch."
+description: "Agentic security starts from agent trust: an agent can't monitor itself or declare itself secure. Why defense in depth needs a watcher underneath — read-only, open source, local-only — and why I built perch."
 tags: [ai-agents, security, agentic-security, coding-agents]
 image: /assets/img/perch-notch.png
 permalink: /
