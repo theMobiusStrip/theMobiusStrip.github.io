@@ -2,8 +2,8 @@
 layout: post
 title: "Your Coding Agent Will Always Tell You It's Safe"
 date: 2026-07-01
-description: "Agentic security starts from agent trust: an agent can't monitor itself or declare itself secure. Why defense in depth needs a watcher underneath — read-only, open source, local-only — and why I built perch."
-tags: [ai-agents, security, agentic-security, coding-agents]
+description: "Agentic security starts from agent trust, and trust starts from verifiability: an agent can't monitor itself or declare itself secure. Why defense in depth needs a watcher underneath — read-only, open source, local-only — and why I built perch."
+tags: [ai-agents, security, agentic-security, agent-verifiability, coding-agents]
 image: /assets/img/perch-notch.png
 permalink: /
 ---
@@ -61,11 +61,11 @@ There's an obvious shortcut, and it doesn't work:
 
 Every agent will produce some version of that answer. It costs nothing and proves nothing. And whether it follows your rules was always the easy question. The harder one is whether you can trust the agent at all — and that has failure modes the rules never touch. The weights ship from a provider that can be breached. The memory can carry a payload from a document it read three sessions ago. The company that trained it can have incentives that were never yours. In none of those cases does the agent know to raise its hand; it says "I'm operating safely" and believes it. The compromised case and the healthy case sound identical. You're polling the suspect — and the suspect is usually the last to know.
 
-So trust can't come from the agent's account of itself. It has to come from outside the agent entirely — and the watcher only earns that seat if it can't become the next trust problem. Read everything, change nothing, send nothing, and be simple enough to audit. That's the spec.
+So trust can't come from the agent's account of itself. It has to come from outside the agent entirely — and the watcher only earns that seat if it can't become the next trust problem. Read everything, change nothing, send nothing, and be simple enough to audit. That's the spec, and the property it buys has a name: verifiability — evidence about the agent that the agent can't touch.
 
 ## Why perch exists
 
-That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions. Live session list, offline risk-scoring on every tool call, rate-limit gauges — all rendered in the notch, at the top of the screen you're already looking at. When an agent runs something dangerous, a red card drops from the notch with the exact command and why it was flagged — even when the call was auto-approved. The riskiest calls are exactly the ones nobody asks you about.
+That's perch, built to exactly that spec: a macOS notch and menu bar monitor for Claude Code and Codex sessions, watching on two axes. Actions: every tool call is risk-scored offline the instant it fires — when an agent runs something dangerous, a red card drops from the notch with the exact command and why it was flagged, even when the call was auto-approved. The riskiest calls are exactly the ones nobody asks you about. And footholds: a live scan of the persistence surface — config, hooks, memory files, MCP servers, LaunchAgents — read straight from disk, so it also catches what happened before perch launched. That payload from three sessions ago? This is the page watching for it. Sessions, rate limits, and token usage ride along in the same glance.
 
 ![Perch in the notch: security score, a Bash call flagged dangerous, live agent sessions, rate-limit gauges](/assets/img/perch-notch.png)
 
@@ -75,7 +75,7 @@ Could a fully unsandboxed agent attack the watcher itself, or quietly doctor the
 
 The three properties are the point, not features. Read-only: perch renders the harness's records and changes nothing — there is no approve/deny code path in the source, and decisions stay in your terminal. Open source: a watcher you can't read is just another agent asking to be believed. Local-only: it uploads *nothing*, because a watcher that phones home is the trust problem wearing a new hat. It's also free — but that's economics, not security. Download it at [themobiusstrip.github.io/perch](https://themobiusstrip.github.io/perch/).
 
-Threat model, stated bluntly: perch trusts the local OS account boundary and the harness records it reads. It does *not* trust the model, the repo, or transcript text; those are inputs to render and score, not instructions to obey. It does not solve an already-compromised host, where an attacker can kill the app, rewrite hooks, or doctor the files underneath it. And it fails open by design: if perch is absent or crashes, it will not brick your agent workflow; you fall back to the terminal prompts you already had. That is a limitation, and it is also the line that keeps a watcher from becoming a new single point of failure.
+Threat model, stated bluntly: perch trusts the local OS account boundary and the harness records and local files it reads. It does *not* trust the model, the repo, or transcript text; those are inputs to render and score, not instructions to obey. It does not solve an already-compromised host, where an attacker can kill the app, rewrite hooks, or doctor the files underneath it. And it fails open by design: if perch is absent or crashes, it will not brick your agent workflow; you fall back to the terminal prompts you already had. That is a limitation, and it is also the line that keeps a watcher from becoming a new single point of failure.
 
 ## When one watcher isn't enough
 
@@ -91,12 +91,12 @@ And yes, crowsnest is a watcher everything phones home to — the difference is 
 | --- | --- | --- |
 | Policy | [agentic-security-playbooks](https://github.com/theMobiusStrip/agentic-security-playbooks) | What *should* the agent do? |
 | Enforcement | [coble](https://github.com/theMobiusStrip/coble) | What *can* it do? |
-| Observation | [perch](https://github.com/theMobiusStrip/perch) | What *is* it doing, right now? |
+| Observation | [perch](https://github.com/theMobiusStrip/perch) | What *is* it doing — and leaving behind? |
 | Audit | [crowsnest](https://github.com/theMobiusStrip/crowsnest) | What *did* the fleet do? |
 
 Policy shapes decisions but can't stop an agent that won't listen. Enforcement draws a hard line, but only where you drew it. Observation gives you evidence the agent doesn't control. Audit keeps "what happened?" answerable at scale. No single layer is enough — and the thread through all four is the conclusion from the top, stated the way building them taught me to state it:
 
-**Agent trust isn't choosing to believe the agent. It's building a system where you don't have to believe it — because you can verify, on your own evidence, what it's doing.**
+**Agent trust isn't choosing to believe the agent. It's verifiability: a system where you don't have to believe it — because you can check, on evidence the agent can't touch, what it's actually doing.**
 
 This road isn't finished. But these days, when my agent tells me "don't worry, I'm being safe," I don't argue, and I don't poll the suspect.
 
