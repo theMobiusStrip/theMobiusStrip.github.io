@@ -1,0 +1,19 @@
+title: Learning Log
+description: Notes on what I'm learning — code, systems, and everything in between.
+url: "https://themobiusstrip.github.io"
+baseurl: ""
+
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# minima theme settings
+minima:
+  date_format: "%Y-%m-%d"
+
+header_pages:
+  - about.md
+
+# Show excerpts on the home page post list
+show_excerpts: true
