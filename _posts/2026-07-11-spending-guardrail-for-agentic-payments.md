@@ -20,7 +20,7 @@ And a coding agent is steerable by everything it reads. A `402` header, a mercha
 
 This tutorial builds that guardrail with [`@themobiusstrip/agentpay-proxy`](https://www.npmjs.com/package/@themobiusstrip/agentpay-proxy), points it at a real x402 merchant, and then spends four of its six steps trying to get around it.
 
-![Architecture: Claude calls paid_fetch on agentpay-proxy, which holds the wallet key. The proxy GETs the URL, gets an HTTP 402 naming price and payee, and its spending guard checks payee, amount, budget, and duplicates. If every rule passes it signs an EIP-3009 authorization and retries with payment; if any rule fails, nothing is signed and Claude gets an error. The website settles the payment on Base Sepolia, then returns the content to the proxy, which passes it back to Claude — so every payment and every response goes through the guard.](/assets/img/x402-proxy-architecture.svg)
+![Architecture: Claude asks agentpay-proxy to fetch a URL and holds no key. The proxy's spending guard checks payee, amount, budget, and duplicates on every request; only a PASS reaches the signer, which signs the EIP-3009 authorization — a local key by default, or a remote MPC/HSM such as BitGo, Circle, or CDP, and the agent never holds it. A FAIL is refused. The proxy completes the x402 handshake with the paid website, which settles on Base Sepolia, and returns the content to Claude.](/assets/img/x402-proxy-architecture-signer.svg)
 
 The agent holds no key. All it can do is ask the proxy to fetch a URL. If the URL costs money, the proxy pays, but only after the guard checks that the payment is correct.
 
