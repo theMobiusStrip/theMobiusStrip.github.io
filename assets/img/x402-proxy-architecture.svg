@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 666" role="img" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>agentpay-proxy architecture: agent, proxy with spending guard, paid website, facilitator</title>
+  <desc>The agent calls paid_fetch on the proxy, which holds the wallet key. The proxy requests the URL, gets an HTTP 402 with the price, and the spending guard checks payee, amount, budget, and duplicates before signing. Refusals return an error with nothing signed. The facilitator settles USDC on Base Sepolia and content flows back to the agent.</desc>
+
+  <defs>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#767676"/>
+    </marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b04a43"/>
+    </marker>
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3d8a68"/>
+    </marker>
+  </defs>
+
+  <!-- white card background so the diagram stays legible on dark pages -->
+  <rect x="0" y="0" width="720" height="666" rx="12" fill="#ffffff"/>
+
+  <!-- content-return path (drawn first, sits behind) -->
+  <path d="M 90 490 L 48 490 L 48 64 L 84 64" fill="none" stroke="#3d8a68" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a-green)"/>
+  <text x="40" y="300" font-size="11.5" fill="#3d8a68" text-anchor="middle" transform="rotate(-90 40 300)" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">⑥ content back to the agent</text>
+
+  <!-- agent -->
+  <rect x="90" y="24" width="330" height="72" rx="8" fill="#f8f9fa" stroke="#c2c2c2"/>
+  <text x="105" y="54" font-size="15" font-weight="600" fill="#111111">Agent (Claude)</text>
+  <rect x="330" y="38" width="74" height="22" rx="11" fill="#f0f0f0" stroke="#cdcdcd"/>
+  <text x="367" y="53" font-size="11.5" fill="#555555" text-anchor="middle">no keys</text>
+  <text x="105" y="78" font-size="12.5" fill="#666666">can only ask the proxy to fetch URLs</text>
+
+  <!-- arrow 1 -->
+  <line x1="255" y1="96" x2="255" y2="136" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
+  <text x="268" y="121" font-size="12" fill="#444444" font-family="SFMono-Regular, Menlo, Consolas, monospace">① paid_fetch(url)</text>
+
+  <!-- proxy -->
+  <rect x="90" y="140" width="330" height="165" rx="8" fill="#ffffff" stroke="#337ab7" stroke-width="1.5"/>
+  <text x="105" y="168" font-size="15" font-weight="600" fill="#111111">agentpay-proxy</text>
+  <rect x="258" y="150" width="148" height="22" rx="11" fill="#e8f1f9" stroke="#9dc0dd"/>
+  <text x="332" y="165" font-size="11.5" fill="#2a6296" text-anchor="middle">holds the wallet key</text>
+
+  <!-- guard sub-box -->
+  <rect x="105" y="183" width="300" height="104" rx="6" fill="#f4f8fc" stroke="#337ab7"/>
+  <text x="120" y="206" font-size="13" font-weight="600" fill="#2a6296">spending guard (runs on every 402)</text>
+  <text x="120" y="230" font-size="12.5" fill="#444444">✓ right payee</text>
+  <text x="250" y="230" font-size="12.5" fill="#444444">✓ right amount</text>
+  <text x="120" y="250" font-size="12.5" fill="#444444">✓ within budget</text>
+  <text x="250" y="250" font-size="12.5" fill="#444444">✓ no duplicates</text>
+  <text x="120" y="274" font-size="12.5" font-weight="600" fill="#2a6296">all pass → sign EIP-3009 authorization</text>
+
+  <!-- refusal branch -->
+  <line x1="405" y1="235" x2="466" y2="235" stroke="#b04a43" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a-red)"/>
+  <rect x="470" y="205" width="200" height="66" rx="8" fill="#fdf2f1" stroke="#d5948f"/>
+  <text x="485" y="228" font-size="13" font-weight="600" fill="#a63d36">✗ refused</text>
+  <text x="485" y="246" font-size="11.5" fill="#8a5a56">no signature, no payment;</text>
+  <text x="485" y="261" font-size="11.5" fill="#8a5a56">the agent just gets an error</text>
+
+  <!-- exchange zone: proxy <-> website -->
+  <line x1="150" y1="305" x2="150" y2="466" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
+  <line x1="255" y1="470" x2="255" y2="309" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
+  <line x1="370" y1="305" x2="370" y2="466" stroke="#337ab7" stroke-width="1.5" marker-end="url(#a-grey)"/>
+  <text x="150" y="364" font-size="12" fill="#444444" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">② request the URL</text>
+  <text x="255" y="394" font-size="12" fill="#444444" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">③ 402: price + payee</text>
+  <text x="370" y="424" font-size="12" fill="#2a6296" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">④ retry with signed payment</text>
+
+  <!-- website -->
+  <rect x="90" y="470" width="330" height="64" rx="8" fill="#f8f9fa" stroke="#c2c2c2"/>
+  <text x="105" y="496" font-size="15" font-weight="600" fill="#111111">Paid website (x402)</text>
+  <text x="105" y="518" font-size="11.5" fill="#666666">x402.org/protected · replies 402 until paid</text>
+
+  <!-- arrow 5 -->
+  <line x1="255" y1="534" x2="255" y2="574" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
+  <text x="268" y="559" font-size="12" fill="#444444">⑤ verify + settle</text>
+
+  <!-- facilitator -->
+  <rect x="90" y="578" width="330" height="64" rx="8" fill="#f8f9fa" stroke="#c2c2c2"/>
+  <text x="105" y="604" font-size="15" font-weight="600" fill="#111111">Facilitator (x402.org)</text>
+  <text x="105" y="626" font-size="11.5" fill="#666666">USDC moves on Base Sepolia</text>
+</svg>

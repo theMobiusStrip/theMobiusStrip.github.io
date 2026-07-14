@@ -5,7 +5,9 @@ date: 2026-07-01
 description: "Agentic security starts from agent trust, and trust starts from verifiability: an agent can't monitor itself or declare itself secure. Why defense in depth needs a watcher underneath — read-only, open source, local-only — and why I built perch."
 tags: [ai-agents, security, agentic-security, agent-verifiability, coding-agents]
 image: /assets/img/perch-notch.png
-permalink: /
+permalink: /your-coding-agent-will-always-tell-you-its-safe/
+redirect_from:
+  - /
 ---
 
 *~6 min read*

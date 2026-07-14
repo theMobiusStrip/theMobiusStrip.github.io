@@ -73,8 +73,66 @@ a:hover, a:focus {
 }
 
 /* Post list */
-.post-list h3 { font-size: 1.3em; margin-top: 0; }
-.post-list .post-meta { display: block; margin-bottom: 0.3em; }
+.post-list {
+  margin-left: 0;
+  list-style: none;
+}
+
+.post-list > li {
+  padding: 1.5em 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid $grey-color-light;
+}
+.post-list > li:last-child { border-bottom: none; }
+
+.post-list h3 {
+  font-size: 1.3em;
+  margin: 0 0 0.4em;
+  line-height: 1.35;
+}
+
+.post-list .post-link,
+.post-list .post-link:visited {
+  color: $grey-color-dark;
+}
+.post-list .post-link:hover,
+.post-list .post-link:focus {
+  color: $brand-color;
+  text-decoration: none;
+}
+
+.post-list .post-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45em;
+  font-size: 0.82rem;
+  color: $grey-color;
+  margin-bottom: 0;
+}
+
+.post-tags { display: inline-flex; flex-wrap: wrap; gap: 0.35em; }
+.post-tag {
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0.3em 0.7em;
+  border-radius: 10px;
+  background: #f0f0f0;
+  color: $grey-color;
+  white-space: nowrap;
+}
+
+.post-desc {
+  margin: 0.55em 0 0;
+  font-size: 0.95em;
+  line-height: 1.65;
+  color: #555555;
+}
+
+.rss-subscribe {
+  font-size: 0.82rem;
+  color: $grey-color;
+}
 
 /* Code */
 pre, code {
@@ -117,6 +175,27 @@ table {
   tr:nth-child(even) td { background: $table-zebra-color; }
 }
 
+/* Definition lists (troubleshooting) — one card per entry */
+dl { margin: 1.2em 0; }
+dt {
+  font-weight: 600;
+  background: #f7f7f7;
+  border-left: 3px solid $brand-color;
+  border-radius: 0 6px 0 0;
+  padding: 0.6em 0.9em 0;
+  margin-top: 1em;
+}
+dd {
+  background: #f7f7f7;
+  border-left: 3px solid $brand-color;
+  border-radius: 0 0 6px 0;
+  padding: 0.15em 0.9em 0.7em;
+  margin: 0;
+  line-height: 1.8;
+  color: $grey-color-dark;
+}
+dt code, dd code { background: transparent; padding: 0; }
+
 /* Blockquote */
 blockquote {
   margin: 0 0 1em;
@@ -156,6 +235,20 @@ blockquote {
   table th, table td { border-color: #444; }
   table tr:nth-child(even) td { background: #262626; }
   table tr:nth-child(odd) td { background: transparent; }
+
+  dt, dd {
+    background: #2d2d2d;
+    border-left-color: #c3a554;
+    color: #e5e5e5;
+  }
+  dt code, dd code { background: transparent; }
+
+  .post-list > li { border-bottom-color: #444; }
+  .post-list .post-link, .post-list .post-link:visited { color: #ffffff; }
+  .post-list .post-link:hover, .post-list .post-link:focus { color: #c3a554; }
+  .post-tag { background: #2d2d2d; color: #9a9a9a; }
+  .post-desc { color: #b5b5b5; }
+  .rss-subscribe { color: #9a9a9a; }
 
   blockquote {
     border-left-color: #444;
