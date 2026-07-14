@@ -1,79 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 440" role="img" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <title>agentpay-proxy architecture: agent, proxy with spending guard, paid website, facilitator</title>
-  <desc>The agent calls paid_fetch on the proxy, which holds the wallet key. The proxy requests the URL, gets an HTTP 402 with the price, and the spending guard checks payee, amount, budget, and duplicates before signing. Refusals return an error with nothing signed. The facilitator settles USDC on Base Sepolia and content flows back to the agent.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 452" role="img" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>agentpay-proxy architecture: Claude, proxy with spending guard, paid website, Base Sepolia</title>
+  <desc>Numbered flow. (1) Claude asks the proxy to fetch a URL — it holds no key. (2) The proxy GETs the URL and (3) receives an HTTP 402 with the price. Its spending guard checks payee, amount, budget, and duplicates: on PASS it signs an EIP-3009 authorization, on FAIL it refuses and tells Claude. (4) The proxy retries with the signed payment; (5) the paid website settles it on Base Sepolia, the testnet chain where the USDC actually moves; (6) the website returns 200 with the content to the proxy. (7) The proxy passes the content back to Claude. Claude only ever talks to the proxy, so every payment and every response passes through the guard.</desc>
 
   <defs>
-    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#767676"/>
+    <marker id="a-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
     </marker>
-    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#b04a43"/>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#337ab7"/>
     </marker>
-    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <marker id="a-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#3d8a68"/>
     </marker>
   </defs>
 
-  <!-- white card background so the diagram stays legible on dark pages -->
-  <rect x="0" y="0" width="1420" height="440" rx="12" fill="#ffffff"/>
+  <rect x="0" y="0" width="920" height="452" rx="10" fill="#ffffff"/>
 
-  <!-- content-return path (drawn first, sits behind): website back along the bottom to the agent -->
-  <path d="M 970 189 L 970 405 L 150 405 L 150 194" fill="none" stroke="#3d8a68" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a-green)"/>
-  <text x="560" y="398" font-size="12" fill="#3d8a68" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">⑥ content back to the agent</text>
+  <!-- ⑦ return path (behind everything): content leaves the PROXY (not the chain) and goes to Claude -->
+  <path d="M 426 388 L 426 424 L 118 424 L 118 277" fill="none" stroke="#3d8a68" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#a-green)"/>
+  <text x="272" y="418" font-size="15" fill="#3d8a68" text-anchor="middle" font-weight="500" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">⑦ content back to Claude</text>
 
-  <!-- agent -->
-  <rect x="30" y="106" width="240" height="88" rx="8" fill="#f8f9fa" stroke="#c2c2c2"/>
-  <text x="46" y="139" font-size="16" font-weight="600" fill="#111111">Agent (Claude)</text>
-  <rect x="196" y="122" width="62" height="22" rx="11" fill="#f0f0f0" stroke="#cdcdcd"/>
-  <text x="227" y="137" font-size="11.5" fill="#555555" text-anchor="middle">no keys</text>
-  <text x="46" y="171" font-size="11.5" fill="#666666">can only ask the proxy to fetch URLs</text>
+  <!-- ===== Claude (centred on flow axis y=221) ===== -->
+  <rect x="24" y="165" width="164" height="112" rx="10" fill="#f7f8fa" stroke="#c8ccd2" stroke-width="1.5"/>
+  <text x="42" y="203" font-size="22" font-weight="600" fill="#111827">Claude</text>
+  <rect x="42" y="215" width="104" height="26" rx="13" fill="#eef1f4" stroke="#c8ccd2"/>
+  <text x="94" y="234" font-size="14" fill="#4b5563" text-anchor="middle">holds no key</text>
+  <text x="42" y="264" font-size="14" fill="#4b5563">asks proxy to fetch</text>
 
-  <!-- arrow 1: agent -> proxy -->
-  <line x1="270" y1="150" x2="415" y2="150" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
-  <text x="343" y="142" font-size="11.5" fill="#444444" text-anchor="middle" font-family="SFMono-Regular, Menlo, Consolas, monospace" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">① paid_fetch(url)</text>
+  <!-- ① Claude → Proxy (paid_fetch labels the arrow in the widened gap) -->
+  <line x1="188" y1="221" x2="256" y2="221" stroke="#6b7280" stroke-width="2.6" marker-end="url(#a-grey)"/>
+  <text x="222" y="211" font-size="15" fill="#374151" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">①</text>
+  <text x="222" y="237" font-size="11" fill="#374151" text-anchor="middle" font-family="SFMono-Regular, Menlo, Consolas, monospace" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">paid_fetch</text>
 
-  <!-- proxy -->
-  <rect x="415" y="55" width="300" height="190" rx="8" fill="#ffffff" stroke="#337ab7" stroke-width="1.5"/>
-  <text x="431" y="84" font-size="16" font-weight="600" fill="#111111">agentpay-proxy</text>
-  <rect x="571" y="67" width="134" height="22" rx="11" fill="#e8f1f9" stroke="#9dc0dd"/>
-  <text x="638" y="82" font-size="11.5" fill="#2a6296" text-anchor="middle">holds the wallet key</text>
+  <!-- ===== agentpay-proxy (guard raised so all 4 handshake arrows land on it) ===== -->
+  <rect x="256" y="52" width="340" height="336" rx="10" fill="#ffffff" stroke="#337ab7" stroke-width="2"/>
+  <text x="276" y="88" font-size="22" font-weight="600" fill="#111827">agentpay-proxy</text>
+  <rect x="464" y="68" width="114" height="26" rx="13" fill="#e8f1f9" stroke="#9dc0dd"/>
+  <text x="521" y="87" font-size="14" fill="#2a6296" text-anchor="middle">holds the key</text>
 
   <!-- guard sub-box -->
-  <rect x="431" y="99" width="270" height="136" rx="6" fill="#f4f8fc" stroke="#337ab7"/>
-  <text x="445" y="123" font-size="13" font-weight="600" fill="#2a6296">spending guard (runs on every 402)</text>
-  <text x="445" y="150" font-size="12.5" fill="#444444">✓ right payee</text>
-  <text x="573" y="150" font-size="12.5" fill="#444444">✓ right amount</text>
-  <text x="445" y="174" font-size="12.5" fill="#444444">✓ within budget</text>
-  <text x="573" y="174" font-size="12.5" fill="#444444">✓ no duplicates</text>
-  <text x="445" y="207" font-size="12" font-weight="600" fill="#2a6296">all pass → sign EIP-3009 authorization</text>
+  <rect x="274" y="102" width="304" height="254" rx="8" fill="#f4f9fd" stroke="#337ab7" stroke-width="1.2"/>
+  <text x="290" y="130" font-size="16" font-weight="600" fill="#2a6296">spending guard · every request</text>
 
-  <!-- refusal branch: drops below the proxy -->
-  <line x1="565" y1="235" x2="565" y2="300" stroke="#b04a43" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#a-red)"/>
-  <text x="579" y="270" font-size="11" fill="#b04a43" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">any rule fails</text>
-  <rect x="431" y="300" width="290" height="74" rx="8" fill="#fdf2f1" stroke="#d5948f"/>
-  <text x="447" y="327" font-size="13" font-weight="600" fill="#a63d36">✗ refused</text>
-  <text x="447" y="346" font-size="11.5" fill="#8a5a56">no signature, no payment;</text>
-  <text x="447" y="362" font-size="11.5" fill="#8a5a56">the agent just gets an error</text>
+  <text x="290" y="170" font-size="16" fill="#1f2937">✓ right payee</text>
+  <text x="436" y="170" font-size="16" fill="#1f2937">✓ right amount</text>
+  <text x="290" y="206" font-size="16" fill="#1f2937">✓ within budget</text>
+  <text x="436" y="206" font-size="16" fill="#1f2937">✓ no duplicates</text>
 
-  <!-- exchange zone: proxy <-> website -->
-  <line x1="715" y1="120" x2="865" y2="120" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
-  <line x1="865" y1="150" x2="715" y2="150" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
-  <line x1="715" y1="180" x2="865" y2="180" stroke="#337ab7" stroke-width="1.5" marker-end="url(#a-grey)"/>
-  <text x="790" y="112" font-size="11" fill="#444444" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">② request the URL</text>
-  <text x="790" y="142" font-size="11" fill="#444444" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">③ 402: price + payee</text>
-  <text x="790" y="172" font-size="11" fill="#2a6296" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">④ retry with signed payment</text>
+  <line x1="290" y1="240" x2="562" y2="240" stroke="#d0e0ed" stroke-width="1"/>
 
-  <!-- website -->
-  <rect x="865" y="111" width="235" height="78" rx="8" fill="#f8f9fa" stroke="#c2c2c2"/>
-  <text x="881" y="142" font-size="16" font-weight="600" fill="#111111">Paid website (x402)</text>
-  <text x="881" y="169" font-size="11" fill="#666666">x402.org/protected · replies 402 until paid</text>
+  <text x="290" y="282" font-size="16" font-weight="700" fill="#2f7a5a">PASS</text>
+  <text x="356" y="282" font-size="16" fill="#1f2937">→ sign EIP-3009</text>
+  <text x="290" y="318" font-size="16" font-weight="700" fill="#a63d36">FAIL</text>
+  <text x="356" y="318" font-size="16" fill="#1f2937">→ refuse, tell Claude</text>
 
-  <!-- arrow 5: website -> facilitator -->
-  <line x1="1100" y1="150" x2="1195" y2="150" stroke="#767676" stroke-width="1.5" marker-end="url(#a-grey)"/>
-  <text x="1147" y="142" font-size="11" fill="#444444" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">⑤ verify + settle</text>
+  <!-- ===== channel Proxy ⇄ Website — 4 handshake steps, 36px apart (centre x=658) ===== -->
+  <line x1="596" y1="108" x2="720" y2="108" stroke="#6b7280" stroke-width="2.2" marker-end="url(#a-grey)"/>
+  <line x1="720" y1="144" x2="596" y2="144" stroke="#6b7280" stroke-width="2.2" marker-end="url(#a-grey)"/>
+  <line x1="596" y1="180" x2="720" y2="180" stroke="#337ab7" stroke-width="2.2" marker-end="url(#a-blue)"/>
+  <line x1="720" y1="216" x2="596" y2="216" stroke="#3d8a68" stroke-width="2.2" marker-end="url(#a-green)"/>
+  <text x="658" y="100" font-size="15" fill="#374151" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">② GET url</text>
+  <text x="658" y="136" font-size="15" fill="#374151" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">③ 402 + price</text>
+  <text x="658" y="172" font-size="15" fill="#2a6296" font-weight="600" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">④ signed retry</text>
+  <text x="658" y="208" font-size="15" fill="#2f7a5a" font-weight="600" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="6" stroke-linejoin="round">⑥ 200 + content</text>
 
-  <!-- facilitator -->
-  <rect x="1195" y="111" width="195" height="78" rx="8" fill="#f8f9fa" stroke="#c2c2c2"/>
-  <text x="1211" y="142" font-size="16" font-weight="600" fill="#111111">Facilitator (x402.org)</text>
-  <text x="1211" y="169" font-size="11" fill="#666666">USDC moves on Base Sepolia</text>
+  <!-- ===== Paid website (upper right) ===== -->
+  <rect x="720" y="98" width="160" height="128" rx="10" fill="#f7f8fa" stroke="#c8ccd2" stroke-width="1.5"/>
+  <text x="740" y="137" font-size="18" font-weight="600" fill="#111827">Paid website</text>
+  <text x="740" y="163" font-size="13" fill="#6b7280">an x402 merchant</text>
+  <text x="740" y="182" font-size="13" fill="#6b7280">replies 402</text>
+  <text x="740" y="200" font-size="13" fill="#6b7280">until paid</text>
+
+  <!-- ⑤ Website → Base Sepolia (shared vertical axis x=800) -->
+  <line x1="800" y1="226" x2="800" y2="274" stroke="#6b7280" stroke-width="2.2" marker-end="url(#a-grey)"/>
+  <text x="812" y="254" font-size="13" fill="#374151" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">⑤ settle</text>
+
+  <!-- ===== Base Sepolia (lower right; bottom aligns with the proxy) ===== -->
+  <rect x="720" y="274" width="160" height="128" rx="10" fill="#f7f8fa" stroke="#c8ccd2" stroke-width="1.5"/>
+  <text x="740" y="313" font-size="18" font-weight="600" fill="#111827">Base Sepolia</text>
+  <text x="740" y="339" font-size="13" fill="#6b7280">the testnet chain</text>
+  <text x="740" y="358" font-size="13" fill="#6b7280">where the USDC</text>
+  <text x="740" y="376" font-size="13" fill="#6b7280">actually settles</text>
 </svg>
