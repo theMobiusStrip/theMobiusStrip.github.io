@@ -204,9 +204,47 @@ Open Claude Code and run `/mcp`. You'll see `paywall` listed, with a single tool
 
 > Fetch https://x402.org/protected with paid_fetch and summarize it.
 
-Claude calls the tool, the proxy pays within the guardrail, and Claude summarizes the content it just bought.
+Claude calls the tool, the proxy pays within the guardrail, and Claude reports back on what it just bought. Verbatim, from my run:
 
-Now make it fail. Restart the proxy with step 2's cap (`CAP=5000 npx @themobiusstrip/agentpay-proxy`) and ask the same thing. This time the tool hands Claude the machine-readable refusal, `cap_exceeded`, instead of the content. Claude can retry, rephrase, or get prompt-injected into trying harder; none of it changes the guard's answer. Whether the payment is correct was never up to the model.
+```
+● Fetch success, HTTP 200. Proxy paid x402 micropayment, settlement confirmed.
+
+  Page content: simple "Protected Content" page. Says "Your payment was
+  successful! Enjoy this banger song." Only real content: embedded SoundCloud
+  player — track "x402 (DJ Reppel Remix)" by danXkim. Next.js app, nothing
+  else on page.
+
+  Settlement (decoded):
+  - Payer: 0x78855d5a5816B15fB042c0F0F88cb3b2D22626f8
+  - Tx: 0xf427902720ba4dbf3ea9759e1e63e900f9d34b09488d46623180556107e3b221
+  - Network: eip155:84532 (Base Sepolia)
+  - Intent ID: d2dfa825-777d-4d61-b830-53649c77f9c2
+
+  Page is demo/reward page for x402 testnet — proves payment flow end-to-end,
+  content itself is joke song.
+```
+
+So one cent buys a joke song. The content is silly; the receipt is not — payer, transaction, network, intent id, all decoded from the settlement that came back with the page.
+
+Now make it fail. Restart the proxy with step 2's cap (`CAP=5000 npx @themobiusstrip/agentpay-proxy`) and ask the same thing. This time the tool hands Claude the machine-readable refusal instead of the content. Again verbatim, lightly trimmed:
+
+```
+● Re-fetch with same intentId — avoid double payment.
+
+  Called paywall
+
+  Re-fetch blocked by proxy guard: cap_exceeded: per-mandate cap 5000 would
+  be exceeded (committed 0 + 10000) — page price 10000 base units (0.01 USDC),
+  cap now 5000 (0.005). No payment made.
+
+  […]
+
+  Note: first fetch paid fine at same price. Guard policy apparently
+  tightened between calls (cap 5000 < price 10000). Want retry with fresh
+  intentId, or check proxy policy config?
+```
+
+Worth reading twice. Claude behaves like a good agent the whole way: it reuses the intent id so a retry can't double-pay, reads the refusal correctly, notices the policy changed between calls, and proposes workarounds. The workarounds go nowhere — a fresh `intentId` meets the same cap. The agent can ask, suggest, or get prompt-injected into trying harder; whether the payment is correct was never up to the model.
 
 ## The rules you set
 
