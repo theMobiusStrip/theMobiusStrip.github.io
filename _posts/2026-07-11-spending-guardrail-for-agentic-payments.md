@@ -4,6 +4,7 @@ title: "A Spending Guardrail for Agentic Payments — Hands-On x402"
 date: 2026-07-11
 description: "Put a guardrail between your coding agent and its wallet: it can pay x402 paywalls, but only the right payee, the right amount, within budget, once. Hands-on with real testnet USDC, wired into Claude over MCP."
 tags: [ai-agents, agentic-payments, x402, tutorial, security, base]
+image: /assets/img/x402-social-card.png
 permalink: /x402-payment-proxy/
 ---
 
@@ -79,10 +80,16 @@ Copy the `settlement` value out of the response and decode it; that's the on-cha
 
 ```bash
 echo '<settlement value>' | base64 -d
-# {"success":true,"payer":"0x…","transaction":"0xa5d604b5…","network":"eip155:84532"}
+# {"success":true,"payer":"0x…","transaction":"0x3ba4b96d…","network":"eip155:84532"}
 ```
 
-Look up that `transaction` hash on [sepolia.basescan.org](https://sepolia.basescan.org) and you'll find a real $0.01 USDC transfer. The guard looked at the payment, found it correct, and allowed it. The rest of the tutorial is about that judgment: what "correct" means, and what happens to a payment that isn't.
+Look up that `transaction` hash on [sepolia.basescan.org](https://sepolia.basescan.org/tx/0x3ba4b96dd6e1d6311b644f918bc25b94903a9e6694d4b871a7369c58f94d8b8e) and you'll find a real $0.01 USDC transfer:
+
+![Basescan transaction details for the payment: status Success on Base Sepolia testnet, with the ERC-20 transfer row showing 0.01 USDC moving to the demo merchant at 0x209693Bc…](/assets/img/x402-basescan-tx.png)
+
+*The receipt, on-chain: 0.01 USDC to the merchant the `402` named.*
+
+The guard looked at the payment, found it correct, and allowed it. The rest of the tutorial is about that judgment: what "correct" means, and what happens to a payment that isn't.
 
 ## What just happened
 
