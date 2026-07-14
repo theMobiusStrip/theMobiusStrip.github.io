@@ -117,6 +117,27 @@ table {
   tr:nth-child(even) td { background: $table-zebra-color; }
 }
 
+/* Definition lists (troubleshooting) — one card per entry */
+dl { margin: 1.2em 0; }
+dt {
+  font-weight: 600;
+  background: #f7f7f7;
+  border-left: 3px solid $brand-color;
+  border-radius: 0 6px 0 0;
+  padding: 0.6em 0.9em 0;
+  margin-top: 1em;
+}
+dd {
+  background: #f7f7f7;
+  border-left: 3px solid $brand-color;
+  border-radius: 0 0 6px 0;
+  padding: 0.15em 0.9em 0.7em;
+  margin: 0;
+  line-height: 1.8;
+  color: $grey-color-dark;
+}
+dt code, dd code { background: transparent; padding: 0; }
+
 /* Blockquote */
 blockquote {
   margin: 0 0 1em;
@@ -156,6 +177,13 @@ blockquote {
   table th, table td { border-color: #444; }
   table tr:nth-child(even) td { background: #262626; }
   table tr:nth-child(odd) td { background: transparent; }
+
+  dt, dd {
+    background: #2d2d2d;
+    border-left-color: #c3a554;
+    color: #e5e5e5;
+  }
+  dt code, dd code { background: transparent; }
 
   blockquote {
     border-left-color: #444;
