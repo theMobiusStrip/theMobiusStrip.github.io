@@ -11,8 +11,8 @@
 <meta property="og:title" content="Perch — the read-only watcher for your coding agents">
 <meta property="og:description" content="Read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. Risk-scores every tool call and tracks the footholds agents leave behind.">
 <meta property="og:image" content="https://themobiusstrip.github.io/perch/img/notch.png">
-<meta property="og:image:width" content="1520">
-<meta property="og:image:height" content="936">
+<meta property="og:image:width" content="2280">
+<meta property="og:image:height" content="1794">
 <meta property="og:image:alt" content="Perch notch panel: security score, a Bash call flagged dangerous with the exact command, live session list, rate-limit gauges">
 <meta property="og:url" content="https://themobiusstrip.github.io/perch/">
 <meta name="twitter:card" content="summary_large_image">
@@ -115,8 +115,8 @@
     height: 420px; pointer-events: none;
     background: radial-gradient(ellipse 60% 55% at 50% 40%, rgba(195, 165, 84, 0.13), transparent 70%);
   }
-  /* Screenshots are true-2x renders at a shared 1520px width; displaying all
-     of them at 760px shows Retina 1:1 native pixels — aligned and sharp. */
+  /* Screenshots are 3x vector renders at a shared 2280px width; displayed at
+     760px they exceed Retina density everywhere — aligned and sharp. */
   .hero-shot img, .shot img {
     width: 100%; height: auto; max-width: 760px; display: block; margin: 0 auto;
     border-radius: 14px; border: 1px solid var(--border);
@@ -295,7 +295,7 @@
     </div>
     <p class="req">Apple silicon (M1+) · macOS 14+ · MIT license</p>
     <div class="hero-shot">
-      <img src="img/notch.png" alt="Perch notch panel: security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, and rate-limit gauges" width="1520" height="936">
+      <img src="img/notch.png" alt="Perch notch panel: security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, and rate-limit gauges" width="2280" height="1794">
     </div>
 
     <div class="trust">
@@ -342,15 +342,15 @@
       </div>
     </div>
     <figure class="shot">
-      <img src="img/integrity.png" alt="Perch Footholds page: the agent persistence surface — config, hooks, MCP servers, memory, LaunchAgents, shell profiles — with recent-change flags" width="1520" height="1160" loading="lazy" decoding="async">
+      <img src="img/integrity.png" alt="Perch Footholds page: the agent persistence surface — config, hooks, MCP servers, memory, LaunchAgents, shell profiles — with recent-change flags" width="2280" height="1410" loading="lazy" decoding="async">
       <figcaption><b>Footholds</b> — the persistence surface scanned straight from disk; a non-Perch hook stays flagged until you acknowledge it.</figcaption>
     </figure>
     <figure class="shot">
-      <img src="img/worktrees.png" alt="Perch Worktrees window: count, total size, and reclaimable tiles; per-project rows with reclaimable, review, active, and orphaned tier badges; a Copy cleanup commands button — read-only, Perch never deletes" width="1520" height="1200" loading="lazy" decoding="async">
+      <img src="img/worktrees.png" alt="Perch Worktrees window: count, total size, and reclaimable tiles; per-project rows with reclaimable, review, active, and orphaned tier badges; a Copy cleanup commands button — read-only, Perch never deletes" width="2280" height="1560" loading="lazy" decoding="async">
       <figcaption><b>Worktrees</b> — stale agent worktrees across every project, tiered conservatively; the only button copies commands for <i>you</i> to run.</figcaption>
     </figure>
     <figure class="shot">
-      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="1520" height="1560" loading="lazy" decoding="async">
+      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="2280" height="2340" loading="lazy" decoding="async">
       <figcaption><b>Token usage</b> — today / 7-day / 30-day totals with per-day, per-model, and per-project breakdowns.</figcaption>
     </figure>
   </section>
