@@ -11,8 +11,8 @@
 <meta property="og:title" content="Perch — the read-only watcher for your coding agents">
 <meta property="og:description" content="Read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. Risk-scores every tool call and tracks the footholds agents leave behind.">
 <meta property="og:image" content="https://themobiusstrip.github.io/perch/img/notch.png">
-<meta property="og:image:width" content="1520">
-<meta property="og:image:height" content="936">
+<meta property="og:image:width" content="2280">
+<meta property="og:image:height" content="1794">
 <meta property="og:image:alt" content="Perch notch panel: security score, a Bash call flagged dangerous with the exact command, live session list, rate-limit gauges">
 <meta property="og:url" content="https://themobiusstrip.github.io/perch/">
 <meta name="twitter:card" content="summary_large_image">
@@ -62,13 +62,20 @@
   /* Nav */
   nav {
     display: flex; align-items: center; gap: 16px;
-    padding: 18px 0;
+    padding: 14px 0;
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(14, 15, 18, 0.88);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    margin: 0 -24px; padding-left: 24px; padding-right: 24px;
   }
   nav img { width: 28px; height: 28px; border-radius: 6px; }
   nav .name { font-weight: 650; letter-spacing: 0.01em; color: var(--text); }
-  nav .links { margin-left: auto; display: flex; gap: 22px; font-size: 0.92rem; }
+  nav .links { margin-left: auto; display: flex; align-items: center; gap: 22px; font-size: 0.92rem; }
   nav .links a { color: var(--text-dim); }
   nav .links a:hover { color: var(--text); text-decoration: none; }
+  .btn-sm { padding: 6px 14px; font-size: 0.88rem; border-radius: 8px; }
+  nav .links a.btn-sm { color: #14120a; }
 
   /* Hero */
   header { text-align: center; padding: 72px 0 40px; }
@@ -83,6 +90,7 @@
     font-size: clamp(2rem, 5.5vw, 3.3rem);
     line-height: 1.12; letter-spacing: -0.02em; font-weight: 700;
     max-width: 720px; margin: 0 auto;
+    text-wrap: balance;
   }
   h1 .gold { color: var(--gold); }
   .sub {
@@ -101,11 +109,19 @@
   .btn-ghost:hover { border-color: var(--text-dim); }
   .req { margin-top: 14px; font-size: 0.82rem; color: var(--text-dim); }
 
-  .hero-shot { padding: 34px 0 0; }
+  .hero-shot { padding: 34px 0 0; position: relative; }
+  .hero-shot::before {
+    content: ""; position: absolute; inset: -40px -80px auto;
+    height: 420px; pointer-events: none;
+    background: radial-gradient(ellipse 60% 55% at 50% 40%, rgba(195, 165, 84, 0.13), transparent 70%);
+  }
+  /* Screenshots are 3x vector renders at a shared 2280px width; displayed at
+     760px they exceed Retina density everywhere — aligned and sharp. */
   .hero-shot img, .shot img {
-    width: 100%; height: auto; max-width: 900px; display: block; margin: 0 auto;
+    width: 100%; height: auto; max-width: 760px; display: block; margin: 0 auto;
     border-radius: 14px; border: 1px solid var(--border);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    position: relative;
   }
 
   /* Trust strip */
@@ -116,13 +132,18 @@
   .trust div {
     background: var(--bg-raise); border: 1px solid var(--border); border-radius: 12px;
     padding: 16px 18px; text-align: center;
+    box-shadow: inset 0 2px 0 rgba(195, 165, 84, 0.45);
   }
   .trust b { display: block; font-size: 0.98rem; color: var(--text); }
   .trust span { font-size: 0.82rem; color: var(--text-dim); }
   .trust a { color: inherit; }
 
-  section { padding: 72px 0 0; }
-  h2 { font-size: 1.7rem; letter-spacing: -0.01em; margin-bottom: 10px; }
+  section { padding: 84px 0 0; }
+  .kicker {
+    font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 10px;
+  }
+  h2 { font-size: 1.85rem; letter-spacing: -0.015em; margin-bottom: 10px; line-height: 1.25; text-wrap: balance; }
   .lead { color: var(--text-dim); max-width: 640px; }
 
   /* Features */
@@ -132,35 +153,64 @@
   .card {
     background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
     padding: 22px 24px;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .card h3 { font-size: 1.05rem; margin-bottom: 6px; }
+  .card:hover {
+    border-color: #3d4250;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card:hover { transition: none; transform: none; }
+  }
+  .card.featured {
+    grid-column: 1 / -1;
+    background: linear-gradient(180deg, rgba(195, 165, 84, 0.06), transparent 55%), var(--bg-card);
+    border-color: rgba(195, 165, 84, 0.28);
+  }
+  .card h3 { font-size: 1.05rem; margin-bottom: 6px; line-height: 1.35; }
   .card h3 .dot { color: var(--red); }
   .card p { font-size: 0.93rem; color: var(--text-dim); }
   .card p + p { margin-top: 8px; }
-  .card code, .card kbd {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.82em;
+  .card.featured h3 { font-size: 1.25rem; letter-spacing: -0.01em; }
+  .card.featured p { max-width: 700px; font-size: 1rem; }
+  code, kbd {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85em;
     background: var(--bg-raise); border: 1px solid var(--border);
     border-radius: 5px; padding: 1px 6px; color: var(--text);
   }
-  .shot { margin-top: 34px; }
+  .shot { margin-top: 56px; }
+  .shot + .shot { margin-top: 72px; }
+  .shot figcaption {
+    text-align: center; font-size: 0.85rem; color: var(--text-dim);
+    margin-top: 12px;
+  }
+  .shot figcaption b { color: var(--text); font-weight: 600; }
 
   /* Threat table */
+  .table-wrap {
+    margin-top: 26px; border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; overflow-x: auto;
+  }
   .threats {
-    width: 100%; border-collapse: collapse; margin-top: 26px;
+    width: 100%; border-collapse: collapse;
     font-size: 0.92rem;
   }
   .threats th, .threats td {
-    border: 1px solid var(--border); padding: 10px 14px; text-align: left;
-    vertical-align: top;
+    padding: 11px 16px; text-align: left; vertical-align: top;
+    border-bottom: 1px solid var(--border);
   }
+  .threats tr:last-child td { border-bottom: none; }
   .threats th { background: var(--bg-raise); color: var(--text); }
-  .threats td:first-child { color: var(--text); font-weight: 550; }
+  .threats tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.015); }
+  .threats td:first-child { color: var(--text); font-weight: 550; white-space: nowrap; }
   .threats td { color: var(--text-dim); }
   .honest {
     border-left: 3px solid var(--gold); background: var(--bg-raise);
     border-radius: 0 12px 12px 0;
     padding: 14px 18px; margin-top: 22px;
     font-size: 0.92rem; color: var(--text-dim);
+    max-width: 78ch;
   }
   .honest b { color: var(--text); }
 
@@ -174,7 +224,7 @@
   .why .pull { color: var(--text); font-weight: 600; }
 
   /* Install + FAQ */
-  .install-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; }
+  .install-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; align-items: start; }
   .install-cols .card ol { margin: 10px 0 0 18px; font-size: 0.93rem; color: var(--text-dim); }
   .install-cols .card li { margin-bottom: 8px; }
   pre {
@@ -183,7 +233,7 @@
     font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85rem;
     color: var(--text); line-height: 1.6;
   }
-  .note { font-size: 0.82rem; color: var(--text-dim); margin-top: 12px; }
+  .note { font-size: 0.82rem; color: var(--text-dim); margin-top: 12px; max-width: 78ch; }
   .faq { margin-top: 26px; display: grid; gap: 10px; }
   .faq div {
     background: var(--bg-raise); border: 1px solid var(--border); border-radius: 12px;
@@ -193,7 +243,11 @@
   .faq span { color: var(--text-dim); }
 
   /* Closing band */
-  .closing { text-align: center; padding: 84px 0 0; }
+  .closing {
+    text-align: center; margin-top: 96px; padding: 56px 32px;
+    background: radial-gradient(ellipse 70% 90% at 50% 0%, rgba(195, 165, 84, 0.08), transparent 70%), var(--bg-raise);
+    border: 1px solid var(--border); border-radius: 18px;
+  }
   .closing h2 { margin-bottom: 6px; }
   .closing p { color: var(--text-dim); }
 
@@ -209,6 +263,8 @@
     .trust { grid-template-columns: repeat(2, 1fr); }
     .grid, .install-cols { grid-template-columns: 1fr; }
     header { padding-top: 48px; }
+    nav { flex-wrap: wrap; }
+    nav .links { flex-wrap: wrap; gap: 14px; }
   }
 </style>
 </head>
@@ -223,7 +279,9 @@
       <a href="#catches">Threats</a>
       <a href="#why">Why</a>
       <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
       <a href="https://github.com/theMobiusStrip/perch">GitHub</a>
+      <a class="btn btn-gold btn-sm" href="https://github.com/theMobiusStrip/perch/releases/latest">Download</a>
     </span>
   </nav>
 
@@ -237,7 +295,7 @@
     </div>
     <p class="req">Apple silicon (M1+) · macOS 14+ · MIT license</p>
     <div class="hero-shot">
-      <img src="img/notch.png" alt="Perch notch panel: security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, and rate-limit gauges" width="1520" height="936">
+      <img src="img/notch.png" alt="Perch notch panel: security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, and rate-limit gauges" width="2280" height="1794">
     </div>
 
     <div class="trust">
@@ -249,10 +307,11 @@
   </header>
 
   <section id="features">
+    <p class="kicker">What it watches</p>
     <h2>What your agents are doing — and leaving behind</h2>
     <p class="lead">Auto-approve rules and relaxed permission modes keep agents fast — and make the dangerous calls silent. Perch risk-scores every tool call offline and makes the bad ones impossible to miss. And because a hijack that survives the session never needs another tool call, it watches the persistence surface too.</p>
     <div class="grid">
-      <div class="card">
+      <div class="card featured">
         <h3><span class="dot">●</span> Danger drops from the notch</h3>
         <p>Every tool call is scored offline: <code>rm -rf</code>, <code>sudo</code>, <code>curl | sh</code>, credential reads, persistence tricks. Danger fires an OS notification and a red notch card with the exact command and why it was flagged — even when the call was auto-approved.</p>
         <p><kbd>Esc</kbd> dismisses, <kbd>←</kbd><kbd>→</kbd> walk the queue. Your editor keeps focus.</p>
@@ -267,8 +326,11 @@
       </div>
       <div class="card">
         <h3>Worktree housekeeping, read-only</h3>
-        <p>Agent sessions mint git worktrees and leave them behind. Perch audits them across every project you work in — <code>reclaimable</code> (clean, merged, stale), <code>review</code> (dirty or unmerged — removing would lose work), <code>active</code> (a live session sits inside), <code>orphaned</code> — with disk sizes and a build-artifact split.</p>
-        <p>One affordance: copy the <code>git worktree remove</code> commands and run them yourself. Perch never deletes, and its git calls never write — even <code>status</code> runs lock-free.</p>
+        <p>Agent sessions mint git worktrees and leave them behind. Perch audits them across every project — tiered <code>reclaimable</code> / <code>review</code> / <code>active</code> / <code>orphaned</code>, with disk sizes — and its git calls never write; even <code>status</code> runs lock-free. Perch never deletes.</p>
+      </div>
+      <div class="card">
+        <h3>Rate limits and token usage</h3>
+        <p>Claude 5h/7d and Codex 5h/weekly windows with reset countdowns and an 80% warning — the Claude gauges are fed by terminal sessions (the desktop app doesn't report them). Token totals for today / 7 days / 30 days, and a full per-day, per-model, per-project dashboard.</p>
       </div>
       <div class="card">
         <h3>A security score you can glance</h3>
@@ -278,25 +340,26 @@
         <h3>Every session, one glance</h3>
         <p>Live list of all Claude Code and Codex sessions — running / waiting / idle, last message, context gauge, red badge on any session that just ran something dangerous.</p>
       </div>
-      <div class="card">
-        <h3>Rate limits and token usage</h3>
-        <p>Claude 5h/7d and Codex 5h/weekly windows with reset countdowns and an 80% warning — the Claude gauges are fed by terminal sessions (the desktop app doesn't report them). Token totals for today / 7 days / 30 days, and a full per-day, per-model, per-project dashboard.</p>
-      </div>
     </div>
-    <div class="shot">
-      <img src="img/integrity.png" alt="Perch Footholds page: the agent persistence surface — config, hooks, MCP servers, memory, LaunchAgents, shell profiles — with recent-change flags" width="1200" height="920" loading="lazy" decoding="async">
-    </div>
-    <div class="shot">
-      <img src="img/worktrees.png" alt="Perch Worktrees window: count, total size, and reclaimable tiles; per-project rows with reclaimable, review, active, and orphaned tier badges; a Copy cleanup commands button — read-only, Perch never deletes" width="1360" height="1160" loading="lazy" decoding="async">
-    </div>
-    <div class="shot">
-      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="1520" height="1560" loading="lazy" decoding="async">
-    </div>
+    <figure class="shot">
+      <img src="img/integrity.png" alt="Perch Footholds page: the agent persistence surface — config, hooks, MCP servers, memory, LaunchAgents, shell profiles — with recent-change flags" width="2280" height="1410" loading="lazy" decoding="async">
+      <figcaption><b>Footholds</b> — the persistence surface scanned straight from disk; a non-Perch hook stays flagged until you acknowledge it.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="img/worktrees.png" alt="Perch Worktrees window: count, total size, and reclaimable tiles; per-project rows with reclaimable, review, active, and orphaned tier badges; a Copy cleanup commands button — read-only, Perch never deletes" width="2280" height="1560" loading="lazy" decoding="async">
+      <figcaption><b>Worktrees</b> — stale agent worktrees across every project, tiered conservatively; the only button copies commands for <i>you</i> to run.</figcaption>
+    </figure>
+    <figure class="shot">
+      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="2280" height="2340" loading="lazy" decoding="async">
+      <figcaption><b>Token usage</b> — today / 7-day / 30-day totals with per-day, per-model, and per-project breakdowns.</figcaption>
+    </figure>
   </section>
 
   <section id="catches">
+    <p class="kicker">Threat model</p>
     <h2>What Perch catches</h2>
     <p class="lead">Threat model: a coding agent hijacked by prompt injection — a poisoned repo file, web page, or dependency — or misbehaving on its own. Every tool call is scored against these categories:</p>
+    <div class="table-wrap">
     <table class="threats">
       <thead><tr><th>Threat</th><th>Examples</th></tr></thead>
       <tbody>
@@ -311,6 +374,7 @@
         <tr><td>Suspicious network</td><td>plaintext <code>http://</code>, raw-IP fetches, netcat</td></tr>
       </tbody>
     </table>
+    </div>
     <p class="note">These are caught live, per tool call — every rule lives in one readable, self-tested file: <a href="https://github.com/theMobiusStrip/perch/blob/main/Sources/PerchCore/RiskAssessor.swift">RiskAssessor.swift</a>. The Footholds page additionally scans the persistence surface — config and hooks, MCP servers, plugins, memory, LaunchAgents, shell profiles — straight from disk, so it also covers changes made before Perch launched.</p>
     <div class="honest">
       <b>What it doesn't catch (yet).</b> Perch is a heuristic pattern-matcher, not a sandbox — a smoke detector, not a firewall. It doesn't see credential reads via the Read/Grep tools (only shell reads), data exfiltration (<code>curl -d @secret</code>, <code>scp</code> to a remote), obfuscated commands (<code>base64 -d | sh</code>, <code>eval</code>, write-a-script-then-run-it), or MCP-tool calls at runtime (installed MCP servers do show up in Footholds). Treat it as a high-signal early warning, not a guarantee — and keep your agent's own permissions sensible too.
@@ -318,6 +382,7 @@
   </section>
 
   <section id="why">
+    <p class="kicker">Philosophy</p>
     <h2>Why a watcher?</h2>
     <div class="why">
       <p class="pull">Ask an agent whether it's following your security rules and it will say yes. That answer costs nothing and proves nothing — the compromised case and the healthy case sound identical.</p>
@@ -328,12 +393,14 @@
   </section>
 
   <section id="install">
+    <p class="kicker">Get started</p>
     <h2>Install</h2>
+    <a class="btn btn-gold" href="https://github.com/theMobiusStrip/perch/releases/latest" style="display:inline-block;margin-top:18px">Download the .dmg</a>
     <div class="install-cols">
       <div class="card">
         <h3>Download the app</h3>
         <ol>
-          <li>Grab the latest <code>.dmg</code> from <a href="https://github.com/theMobiusStrip/perch/releases/latest">Releases</a> and drag Perch into Applications.</li>
+          <li>Open the <code>.dmg</code> and drag Perch into Applications.</li>
           <li>First launch: Perch is open-source and signed locally rather than notarized, so macOS asks once. macOS 15+: <b>Privacy&nbsp;&amp;&nbsp;Security → Open Anyway</b>. macOS 14: right-click → <b>Open</b>.</li>
           <li>Menu bar → <b>Install Claude Hooks…</b> / <b>Install Codex Hooks…</b> (existing settings are parse-merged and backed up).</li>
           <li>Restart running sessions, then verify with <b>Doctor</b>. Codex hook trust is recorded automatically during install; only if that fails (an old Codex CLI) run <code>/hooks</code> once in the terminal <code>codex</code> TUI.</li>
@@ -349,6 +416,11 @@ make run</pre>
         <p class="note">Verify the DMG: each release ships a <code>.sha256</code> and a GPG-signed checksum.</p>
       </div>
     </div>
+  </section>
+
+  <section id="faq">
+    <p class="kicker">Questions</p>
+    <h2>FAQ</h2>
     <div class="faq">
       <div><b>Does it slow my agents down?</b> <span>No. Hooks call a bridge that forwards the event over a local socket in ~10&nbsp;ms and exits — fire-and-forget. Approvals never route through Perch. If Perch dies, your agents don't even notice.</span></div>
       <div><b>What exactly does it read?</b> <span>The session records the agents already write — hook events, transcripts, usage files — plus, for the Footholds scan, the agent-config and persistence surfaces themselves: <code>~/.claude</code> settings and plugins, <code>~/.claude.json</code>, <code>CLAUDE.md</code> and memory files, LaunchAgents, shell profiles (some checked by timestamp only). All read-only; nothing leaves your machine — Perch makes zero network calls.</span></div>
