@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Perch — the read-only watcher for your coding agents</title>
-<meta name="description" content="Perch is a read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. It risk-scores every tool call, tracks the persistence footholds agents leave behind, and alerts you the instant either turns dangerous — plus sessions, rate limits, and token usage.">
+<meta name="description" content="Perch is a read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. It risk-scores every tool call, tracks the persistence footholds agents leave behind, and alerts you the instant either turns dangerous — plus verified monitoring coverage, sessions, rate limits, token usage, and offline detection insights.">
 <link rel="canonical" href="https://themobiusstrip.github.io/perch/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Perch">
@@ -12,8 +12,8 @@
 <meta property="og:description" content="Read-only macOS notch + menu bar monitor for Claude Code and Codex. Open source, free, local-only. Risk-scores every tool call and tracks the footholds agents leave behind.">
 <meta property="og:image" content="https://themobiusstrip.github.io/perch/img/notch.png">
 <meta property="og:image:width" content="2280">
-<meta property="og:image:height" content="1794">
-<meta property="og:image:alt" content="Perch notch panel: security score, a Bash call flagged dangerous with the exact command, live session list, rate-limit gauges">
+<meta property="og:image:height" content="1989">
+<meta property="og:image:alt" content="Perch notch panel: verified monitoring coverage, security score, a Bash call flagged dangerous with the exact command, live session list, an Insights shortcut, rate-limit gauges">
 <meta property="og:url" content="https://themobiusstrip.github.io/perch/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="256x256" href="img/icon.png">
@@ -181,6 +181,14 @@
   }
   .shot { margin-top: 56px; }
   .shot + .shot { margin-top: 72px; }
+  /* The two shots in a pair are rendered at identical aspect ratios, so
+     equal columns give equal heights and a straight vertical seam. */
+  .shot-pair {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin-top: 56px; align-items: start;
+  }
+  .shot-pair .shot { margin-top: 0; }
+  .shot-pair + .shot, .shot-pair + .shot-pair { margin-top: 72px; }
   .shot figcaption {
     text-align: center; font-size: 0.85rem; color: var(--text-dim);
     margin-top: 12px;
@@ -262,6 +270,7 @@
   @media (max-width: 720px) {
     .trust { grid-template-columns: repeat(2, 1fr); }
     .grid, .install-cols { grid-template-columns: 1fr; }
+    .shot-pair { grid-template-columns: 1fr; gap: 56px; }
     header { padding-top: 48px; }
     nav { flex-wrap: wrap; }
     nav .links { flex-wrap: wrap; gap: 14px; }
@@ -295,13 +304,13 @@
     </div>
     <p class="req">Apple silicon (M1+) · macOS 14+ · MIT license</p>
     <div class="hero-shot">
-      <img src="img/notch.png" alt="Perch notch panel: security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, and rate-limit gauges" width="2280" height="1794">
+      <img src="img/notch.png" alt="Perch notch panel: monitoring verified for Claude Code and Codex event delivery, security score 75, a Bash call flagged dangerous with the exact command and why, live agent session list, an Insights shortcut for 24-hour, 7-day, and 30-day trends, and rate-limit gauges" width="2280" height="1989">
     </div>
 
     <div class="trust">
       <div><b>Read-only</b><span>no approve/deny code path exists</span></div>
-      <div><b>Open source</b><span><a href="https://github.com/theMobiusStrip/perch">MIT · ~13k lines of Swift, zero deps</a></span></div>
-      <div><b>Local-only</b><span>zero network calls, zero upload</span></div>
+      <div><b>Open source</b><span><a href="https://github.com/theMobiusStrip/perch">MIT · ~18k lines of Swift, no third-party deps</a></span></div>
+      <div><b>Local-only</b><span>zero telemetry — nothing observed leaves your Mac</span></div>
       <div><b>Free</b><span>no tiers, no account</span></div>
     </div>
   </header>
@@ -313,7 +322,7 @@
     <div class="grid">
       <div class="card featured">
         <h3><span class="dot">●</span> Danger drops from the notch</h3>
-        <p>Every tool call is scored offline: <code>rm -rf</code>, <code>sudo</code>, <code>curl | sh</code>, credential reads, persistence tricks. Danger fires an OS notification and a red notch card with the exact command and why it was flagged — even when the call was auto-approved.</p>
+        <p>Every tool call is scored offline: <code>rm -rf</code>, <code>sudo</code>, <code>curl | sh</code>, credential reads, persistence tricks. Danger fires an OS notification and a red notch card with the exact command and why it was flagged — even when the call was auto-approved. Notification actions jump straight to the matching detection, session, or usage view.</p>
         <p><kbd>Esc</kbd> dismisses, <kbd>←</kbd><kbd>→</kbd> walk the queue. Your editor keeps focus.</p>
       </div>
       <div class="card">
@@ -325,6 +334,14 @@
         <p>A separate notch page scans the persistence surface straight from disk: agent config and hooks, MCP servers, plugins, <code>CLAUDE.md</code> and memory files, LaunchAgents, shell profiles. No hook required — it covers changes made before Perch launched — and a flag stays up until you acknowledge it.</p>
       </div>
       <div class="card">
+        <h3>Monitoring you can verify</h3>
+        <p>A coverage strip checks the deployed bridge, the local event socket, Claude wiring, and Codex hook trust — then refuses to report <i>verified</i> until a real event from each configured agent actually arrives. Its state colors the collapsed notch and the menu-bar bird, and a guided setup installs or repairs the integrations.</p>
+      </div>
+      <div class="card">
+        <h3>Local Insights, zero setup</h3>
+        <p>Offline caution/danger trends for this Mac: 24-hour, 7-day, and 30-day timelines, plus findings grouped by code, agent, tool, and session (menu bar → <b>Insights…</b>). Built on a metadata-only local record — never commands, paths, or prompts — that records what Perch observed, not whether a request ran.</p>
+      </div>
+      <div class="card">
         <h3>Worktree housekeeping, read-only</h3>
         <p>Agent sessions mint git worktrees and leave them behind. Perch audits them across every project — tiered <code>reclaimable</code> / <code>review</code> / <code>active</code> / <code>orphaned</code>, with disk sizes — and its git calls never write; even <code>status</code> runs lock-free. Perch never deletes.</p>
       </div>
@@ -333,26 +350,34 @@
         <p>Claude 5h/7d and Codex 5h/weekly windows with reset countdowns and an 80% warning — the Claude gauges are fed by terminal sessions (the desktop app doesn't report them). Token totals for today / 7 days / 30 days, and a full per-day, per-model, per-project dashboard.</p>
       </div>
       <div class="card">
-        <h3>A security score you can glance</h3>
-        <p>A rolling 0–100 posture score in the notch and menu bar: −25 per danger, −5 per caution over the last hour. A quiet hour heals it back to 100.</p>
+        <h3>A security score you can glance — and audit</h3>
+        <p>A rolling 0–100 posture score in the notch and menu bar: −25 per danger, −5 per caution over the last hour; a quiet hour heals it back to 100. Open the strip for the formula and retained recent detections — dismissing an alert card doesn't erase its history, and the score survives an app restart.</p>
       </div>
       <div class="card">
         <h3>Every session, one glance</h3>
         <p>Live list of all Claude Code and Codex sessions — running / waiting / idle, last message, context gauge, red badge on any session that just ran something dangerous.</p>
       </div>
     </div>
-    <figure class="shot">
-      <img src="img/integrity.png" alt="Perch Footholds page: the agent persistence surface — config, hooks, MCP servers, memory, LaunchAgents, shell profiles — with recent-change flags" width="2280" height="1410" loading="lazy" decoding="async">
-      <figcaption><b>Footholds</b> — the persistence surface scanned straight from disk; a non-Perch hook stays flagged until you acknowledge it.</figcaption>
-    </figure>
-    <figure class="shot">
-      <img src="img/worktrees.png" alt="Perch Worktrees window: count, total size, and reclaimable tiles; per-project rows with reclaimable, review, active, and orphaned tier badges; a Copy cleanup commands button — read-only, Perch never deletes" width="2280" height="1560" loading="lazy" decoding="async">
-      <figcaption><b>Worktrees</b> — stale agent worktrees across every project, tiered conservatively; the only button copies commands for <i>you</i> to run.</figcaption>
-    </figure>
-    <figure class="shot">
-      <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="2280" height="2340" loading="lazy" decoding="async">
-      <figcaption><b>Token usage</b> — today / 7-day / 30-day totals with per-day, per-model, and per-project breakdowns.</figcaption>
-    </figure>
+    <div class="shot-pair">
+      <figure class="shot">
+        <img src="img/integrity.png" alt="Perch Footholds page: the agent persistence surface — config, hooks, MCP servers, memory, LaunchAgents, shell profiles — with recent-change flags" width="2280" height="1560" loading="lazy" decoding="async">
+        <figcaption><b>Footholds</b> — the persistence surface scanned straight from disk; a non-Perch hook stays flagged until you acknowledge it.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/worktrees.png" alt="Perch Worktrees window: count, total size, and reclaimable tiles; per-project rows with reclaimable, review, active, and orphaned tier badges; a Copy cleanup commands button — read-only, Perch never deletes" width="2280" height="1560" loading="lazy" decoding="async">
+        <figcaption><b>Worktrees</b> — stale agent worktrees across every project, tiered conservatively; the only button copies commands for <i>you</i> to run.</figcaption>
+      </figure>
+    </div>
+    <div class="shot-pair">
+      <figure class="shot">
+        <img src="img/insights.png" alt="Perch Insights window: caution and danger totals, a 24-hour stacked detection timeline, findings grouped by stable code, detections by agent and tool, and sessions with finding clusters" width="3273" height="3360" loading="lazy" decoding="async">
+        <figcaption><b>Insights</b> — 24-hour / 7-day / 30-day trends read locally from the metadata-only record; observed requests only, never commands, paths, or prompts.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/usage.png" alt="Perch token usage dashboard with daily stacked chart and per-agent, per-model, per-project breakdowns" width="2280" height="2340" loading="lazy" decoding="async">
+        <figcaption><b>Token usage</b> — today / 7-day / 30-day totals with per-day, per-model, and per-project breakdowns.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section id="catches">
@@ -402,9 +427,9 @@
         <ol>
           <li>Open the <code>.dmg</code> and drag Perch into Applications.</li>
           <li>First launch: Perch is open-source and signed locally rather than notarized, so macOS asks once. macOS 15+: <b>Privacy&nbsp;&amp;&nbsp;Security → Open Anyway</b>. macOS 14: right-click → <b>Open</b>.</li>
-          <li>Menu bar → <b>Install Claude Hooks…</b> / <b>Install Codex Hooks…</b> (existing settings are parse-merged and backed up).</li>
-          <li>Restart running sessions, then verify with <b>Doctor</b>. Codex hook trust is recorded automatically during install; only if that fails (an old Codex CLI) run <code>/hooks</code> once in the terminal <code>codex</code> TUI.</li>
-          <li>Allow notifications when macOS asks — danger alerts arrive as banners. Tip: in <b>System Settings → Notifications → Perch</b>, keep banners on but turn the sound off; you want to <i>see</i> every flag, not get pinged by it.</li>
+          <li>Complete the guided setup that opens on a fresh install — or menu bar → <b>Monitoring Setup…</b> — to install Claude Code and/or Codex monitoring (existing settings are parse-merged and backed up).</li>
+          <li>Start or restart each configured agent, then watch <b>Live verification</b> confirm a real hook event arrived. <b>Run Doctor</b> checks bridge, socket, hook wiring, and trust. Codex hook trust is recorded automatically during install; only if that fails (an old Codex CLI) run <code>/hooks</code> once in the terminal <code>codex</code> TUI.</li>
+          <li>Allow notifications and choose which event categories interrupt you, right in the setup window. Tip: turn off <b>Play notification sounds</b> — you want to <i>see</i> every flag, not get pinged by it.</li>
         </ol>
       </div>
       <div class="card">
@@ -423,7 +448,8 @@ make run</pre>
     <h2>FAQ</h2>
     <div class="faq">
       <div><b>Does it slow my agents down?</b> <span>No. Hooks call a bridge that forwards the event over a local socket in ~10&nbsp;ms and exits — fire-and-forget. Approvals never route through Perch. If Perch dies, your agents don't even notice.</span></div>
-      <div><b>What exactly does it read?</b> <span>The session records the agents already write — hook events, transcripts, usage files — plus, for the Footholds scan, the agent-config and persistence surfaces themselves: <code>~/.claude</code> settings and plugins, <code>~/.claude.json</code>, <code>CLAUDE.md</code> and memory files, LaunchAgents, shell profiles (some checked by timestamp only). All read-only; nothing leaves your machine — Perch makes zero network calls.</span></div>
+      <div><b>What exactly does it read?</b> <span>The session records the agents already write — hook events, transcripts, usage files — plus, for the Footholds scan, the agent-config and persistence surfaces themselves: <code>~/.claude</code> settings and plugins, <code>~/.claude.json</code>, <code>CLAUDE.md</code> and memory files, LaunchAgents, shell profiles (some checked by timestamp only). All read-only; nothing Perch observes ever leaves your machine.</span></div>
+      <div><b>Does it keep a history of what my agents ran?</b> <span>No. Deduplicated caution/danger detections write metadata-only rows to a local SQLite file with a 30-day retention: event, endpoint, and tool identifiers, risk level, and stable finding codes. Never commands, tool payloads, paths, prompts, or outcomes — and a row never claims a request was approved or executed. <b>Insights</b> reads that store in-process; there is no uploader. The versioned read contract is in <a href="https://github.com/theMobiusStrip/perch/blob/main/docs/detection-storage.md">Detection storage</a>.</span></div>
       <div><b>Can it block or approve anything?</b> <span>No, by design. There is no approve/deny code path in the source. A monitoring tool should have zero authority over the thing it monitors.</span></div>
     </div>
   </section>
