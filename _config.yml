@@ -17,5 +17,10 @@ header_pages:
   - posts.md
   - about.md
 
+# Repository-only agent guidance; do not publish it as site content.
+exclude:
+  - AGENTS.md
+  - CLAUDE.md
+
 # Show excerpts on the home page post list
 show_excerpts: true
