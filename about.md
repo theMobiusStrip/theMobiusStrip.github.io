@@ -14,7 +14,7 @@ Everything I post here is something I actually ran or built; the posts include t
 : A read-only, local-only, open-source watcher for coding agents. It sits in the macOS menu bar and shows you what your agents are doing — because an agent can't be the one telling you it's safe. The thinking behind it is in [the essay](/your-coding-agent-will-always-tell-you-its-safe/).
 
 [agentpay-proxy](https://www.npmjs.com/package/@themobiusstrip/agentpay-proxy)
-: A spending guardrail between an agent and its wallet. It pays x402 paywalls, but refuses the wrong payee, the wrong amount, anything over budget, and duplicate payments. Guard internals live in [agentpay-guard](https://github.com/theMobiusStrip/agentpay-guard); the walkthrough is [the tutorial](/x402-payment-proxy/).
+: A deployment wrapper for the main agentpay-guard artifact. It pays x402 paywalls while enforcing per-payment ceilings, restart-safe budgets, and duplicate protection below the agent. Guard internals live in [agentpay-guard](https://github.com/theMobiusStrip/agentpay-guard); the walkthrough is [the tutorial](/x402-payment-proxy/).
 
 ## Elsewhere
 
