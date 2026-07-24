@@ -4,14 +4,16 @@
   <rect x="0" y="0" width="1200" height="630" fill="#1c1c1c"/>
 
   <!-- kicker -->
-  <text x="80" y="150" font-size="22" font-weight="600" letter-spacing="5" fill="#c3a554">HANDS-ON X402</text>
+  <text x="80" y="150" font-size="22" font-weight="600" letter-spacing="3.5" fill="#c3a554">AGENTPAY-GUARD · HANDS-ON X402</text>
 
   <!-- title -->
   <text x="80" y="232" font-size="66" font-weight="700" fill="#ffffff">A Spending Guardrail</text>
   <text x="80" y="312" font-size="66" font-weight="700" fill="#ffffff">for Agentic Payments</text>
 
-  <!-- checklist -->
-  <text x="80" y="392" font-size="26" fill="#b5b5b5"><tspan fill="#c3a554">✓</tspan> right payee&#160;&#160;&#160;<tspan fill="#c3a554">✓</tspan> right amount&#160;&#160;&#160;<tspan fill="#c3a554">✓</tspan> within budget&#160;&#160;&#160;<tspan fill="#c3a554">✓</tspan> pays once</text>
+  <!-- policy guarantees -->
+  <text x="80" y="388" font-size="24" fill="#b5b5b5"><tspan fill="#c3a554">✓</tspan> tested envelope&#160;&#160;&#160;<tspan fill="#c3a554">✓</tspan> per-payment max</text>
+  <text x="80" y="430" font-size="24" fill="#b5b5b5"><tspan fill="#c3a554">✓</tspan> restart-safe budget&#160;&#160;&#160;<tspan fill="#c3a554">✓</tspan> duplicate guard</text>
+  <text x="80" y="472" font-size="24" fill="#b5b5b5"><tspan fill="#c3a554">✓</tspan> bounded auth lifetime</text>
 
   <!-- site -->
   <text x="80" y="565" font-size="22" fill="#767676">themobiusstrip.github.io</text>
